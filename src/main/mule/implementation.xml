@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<sub-flow name="set-limit-and-offset" doc:id="83b43e7e-8c55-4ed5-a0dd-6749e829570b" >
+		<set-variable value="#[message.attributes.queryParams.offset default 0]" doc:name="offset" doc:id="aa01670b-fa11-455c-b7ba-665ef9a462d3" variableName="offset" />
+		<logger level="INFO" doc:name="offset" doc:id="15ed28c6-d03c-4a5b-84a8-6983241cfa3a" message='#["offset: " ++ vars.offset as String]'/>
+		<set-variable value="#[message.attributes.queryParams.limit default 10]" doc:name="limit" doc:id="b8e5fd32-1b28-4569-ad03-0cec74d9bdbe" variableName="limit" />
+		<logger level="INFO" doc:name="limit" doc:id="54305f3a-c1c9-43a8-ae43-eb557959d1b7" message='#["limit: " ++ vars.limit as String]'/>
+	</sub-flow>
+	<sub-flow name="set-type-period-validate-period" doc:id="83e6bfd6-a1f1-4cdc-aa75-5d5be1ad7d9f" >
+		<set-variable value='#[message.attributes.queryParams."type" default ""]' doc:name="type" doc:id="2436963c-f3b6-4107-838b-3cb16c268853" variableName="type" />
+		<logger level="INFO" doc:name="type" doc:id="721c3c3f-dc2f-4867-accc-fedc804b8503" message='#["spaceEventType: " ++ vars."type" as String]'/>
+		<set-variable value='#[message.attributes.queryParams.period default ""]' doc:name="period" doc:id="d0364604-5871-4597-a6dd-fa84b43c8810" variableName="period" />
+		<logger level="INFO" doc:name="period" doc:id="6f278556-adf2-4d93-8df7-2447c8b87cc8" message='#["period: " ++ vars.period as String]'/>
+		<choice doc:name="Choice" doc:id="c1c2036d-cc19-44f0-a41b-485d3a7e8887" >
+			<when expression='#[vars.period != ""]'>
+				<validation:matches-regex doc:name="Matches regex" doc:id="a2cf4da4-794f-415e-a484-a7ef9206d3a2" value="#[vars.period]" regex="${validate.period}" message="${validate.error_message_period}">
+					<error-mapping sourceType="VALIDATION:MISMATCH" targetType="APP:PERIOD_WRONG_FORMAT" />
+				</validation:matches-regex>
+				<logger level="INFO" doc:name="Period value" doc:id="de7a59ed-49a7-4af5-8e2e-ac34f46eac2d" message="#['Period value: ' ++ vars.period as String]"/>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Period absent!" doc:id="82a2888c-e38c-46ad-87c7-88afba51a4ba" message="Period absent!"/>
+			</otherwise>
+		</choice>
+	</sub-flow>
+	<sub-flow name="getSpaceEvents" doc:id="da5b96f9-add3-4729-b756-6b2f439d9022" >
+		<flow-ref doc:name="set-limit-and-offset" doc:id="7776b42e-174e-4fdf-8080-fd143a24300e" name="set-limit-and-offset"/>
+		<flow-ref doc:name="set-type-period-validate-period" doc:id="784a9c92-307e-40e5-a5d4-eb1b62c0b6c4" name="set-type-period-validate-period"/>
+		<http:request method="GET" doc:name="GET /events" doc:id="91e6047d-a590-4879-97ee-94dec39ad916" config-ref="HTTP_Request_configuration" path="/event">
+					<http:query-params><![CDATA[#[output application/java
+---
+{
+	"offset" : vars.offset,
+	"limit" : vars.limit
+}]]]></http:query-params>
+				</http:request>
+		<flow-ref doc:name="transform-events-list" doc:id="f9144418-eeab-42cb-b9c2-1e3dc3282551" name="transform-events-list" />
+		<ee:transform doc:name="filter" doc:id="14315cd4-a326-431e-b1ad-f610d9ac738e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var itemContains = ( i, v ) -> (i contains(v))
+var itemEquals = ( i, v ) -> (i == v)
+---
+if(vars."type" != "" and vars.period != "") 
+    payload filter ((item, index) -> 
+    	itemContains(item.date[0 to 9], vars.period) and 
+    	itemEquals(item."type", vars."type"))
+else if(vars."type" != "") 
+    payload filter ((item, index) -> 
+    	itemEquals(item."type", vars."type"))
+else if(vars.period != "")
+    payload filter ((item, index) -> 
+    	itemContains(item.date[0 to 9], vars.period))
+else
+    payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="sizeOf payload" doc:id="7fb57a45-9c51-47c2-ad99-d95cb6d23e72" message='#["count: " ++ sizeOf(payload as Array)]'/>
+	</sub-flow>
+	<sub-flow name="getSpaceEventByName" doc:id="3776597a-82e9-4cef-9d1b-f1e8b535c282">
+		<set-variable value='#[message.attributes.queryParams.name default ""]' doc:name="name" doc:id="86cf1294-dc2f-4cb8-a41d-2ed92129ce82" variableName="name"/>
+		<logger level="INFO" doc:name="name" doc:id="7c750509-3373-4fde-9417-46547175fe13" message='#["name: " ++ vars.name as String]'/>
+		<http:request method="GET" doc:name="GET /event?name={searched}" doc:id="6d27a4ca-daca-4499-8f25-699cfd0f70c0" config-ref="HTTP_Request_configuration" path="/event/">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"search" : vars.name,
+	"limit" : 20
+}]]]></http:query-params>
+		</http:request>
+		<set-variable value="#[payload.count default 0]" doc:name="found" doc:id="17fb7bc0-9e84-46c1-af01-73ff7cdc88f0" variableName="found"/>
+		<logger level="INFO" doc:name="found" doc:id="c5f2e48f-b3d2-4381-b36c-450fd7771ebf" message='#["found: " ++ vars.found  as String]'/>
+		<validation:is-true doc:name="Validate count is not 0" doc:id="eaf58ff7-5a19-4b7d-b3a1-d5c2f78be63e" expression="#[vars.found != 0]" message="${validate.error_message_notFound}">
+			<error-mapping sourceType="VALIDATION:INVALID_BOOLEAN" targetType="APP:EVENTS_NOT_FOUND" />
+		</validation:is-true>
+		<choice doc:name="Choice" doc:id="f53fee7d-9d53-499b-aaa4-6ed3cf140a35" >
+			<when expression="#[vars.found &gt; 1]">
+				<ee:transform doc:name="too many records" doc:id="45fc9888-c197-4b04-b587-1c10f683813f" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var msg = "We found too many records for your query, try one of the next!"
+---
+{
+	"message": msg,
+	"variants": flatten((payload.results map ( result , indexOfResult ) -> {
+						name: result.name
+						}).name)
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="single SpaceEvent" doc:id="4eb8713f-151a-496a-8328-9f8eca72305a" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	id: payload.results[0].id,
+	name: payload.results[0].name,
+	date: payload.results[0].date,
+	picture_of_the_day: null,
+	location: payload.results[0].location,
+	"type": payload.results[0]."type".name,
+	description: payload.results[0].description,
+	url: payload.results[0].url,
+	news_url: payload.results[0].news_url,
+	video_url: payload.results[0].video_url,
+	feature_image: payload.results[0].feature_image
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="#[payload]" doc:name="objectEventByName" doc:id="3f3a4a0f-cc20-46cd-97d7-89747dbaf574" variableName="eventByName" />
+				<set-variable value="#[vars.eventByName.date[0 to 9]]" doc:name="date" doc:id="2a8d7154-1370-4eb1-9987-9f50886854a5" variableName="date" />
+				<logger level="INFO" doc:name="date" doc:id="49b91176-26d6-4ea3-89b6-5de27e531baa" message='#["date: " ++ vars.date as String]' />
+				<http:request method="GET" doc:name="nasa-apod" doc:id="56c704d3-6dcb-44d9-9faa-199aacf9f9a5" config-ref="HTTP_Request_config_nasa" path="/apod" >
+					<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"date" : vars.date,
+	"api_key" : Mule::p('nasa.api_key')
+}]]]></http:query-params>
+				</http:request>
+				<ee:transform doc:name="add-nasa-data-to-event" doc:id="1b3fb980-9912-42ee-b681-98954a683c62" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	id: vars.eventByName.id,
+	name: vars.eventByName.name,
+	date: vars.eventByName.date,
+	picture_of_the_day: {
+		hdurl: payload.hdurl,
+		explanation: payload.explanation
+	},
+	location: vars.eventByName.location,
+	"type": vars.eventByName."type",
+	description: vars.eventByName.description,
+	url: vars.eventByName.url,
+	news_url: vars.eventByName.news_url,
+	video_url: vars.eventByName.video_url,
+	feature_image: vars.eventByName.feature_image
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</sub-flow>
+	<sub-flow name="getUpcomingSpaceEvents" doc:id="eed31231-5f13-4b24-a320-78170b589a1d" >
+		<flow-ref doc:name="set-limit-and-offset" doc:id="f44a13c2-24f4-4c03-a623-7491c63c1d9d" name="set-limit-and-offset"/>
+		<http:request method="GET" doc:name="GET /upcoming" doc:id="fcb745b6-6da9-4882-a3e1-7af683000170" config-ref="HTTP_Request_configuration" path="/event/upcoming" >
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"offset" : vars.offset,
+	"limit" : vars.limit
+}]]]></http:query-params>
+		</http:request>
+		<flow-ref doc:name="transform-events-list" doc:id="0d918e2a-451d-4264-afba-89ad3f5989b9" name="transform-events-list" />
+	</sub-flow>
+	<sub-flow name="transform-events-list" doc:id="e9586bc6-9fc7-44bb-916c-099c82744279" >
+		<ee:transform doc:name="of SpaceEvents list" doc:id="f30aa99c-222e-4ef7-bb05-99cbb7fee47c">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0 
+output application/json 
+---
+payload.results map ( result , indexOfResult ) -> {
+	id: result.id,
+	name: result.name,
+	date: result.date,
+	location: result.location,
+	"type": result."type".name,
+	description: result.description,
+	url: result.url,
+	news_url: result.news_url,
+	video_url: result.video_url,
+	feature_image: result.feature_image
+}]]>
+				</ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>

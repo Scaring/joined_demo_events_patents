@@ -1,0 +1,57 @@
+#%RAML 1.0
+title: space-events-demo
+
+types:
+  Event: !include /dataTypes/Event.raml
+  EventType: !include /dataTypes/EventType.raml
+
+/events:
+  get:
+    description: Return by 10 space events.
+    queryParameters:
+      offset:
+        required: false
+      limit:
+        required: false
+      period:
+        required: false
+      type:
+        required: false
+        type: EventType
+    responses:
+      200:
+        body:
+          application/json:
+            type: Event[]
+            examples:
+              output: !include /examples/EventsExample.raml
+    
+/event:
+  get:
+    description: Search space event by name.
+    queryParameters:
+      name:
+        required: true
+    responses:
+      200:
+        body:
+          application/json:
+            type: Event
+            examples:
+              output: !include /examples/SingleEventExample.raml    
+      400:
+        body:
+          application/json:
+            example: | 
+              {"message": "Events not found"}          
+      
+/upcoming:
+  get:
+    description: Return all upcoming space events.
+    responses:
+      200:
+        body:
+          application/json:
+            type: Event[]
+            examples:
+              output: !include /examples/EventsExample.raml

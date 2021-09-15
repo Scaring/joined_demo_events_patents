@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="EventsArray" format="json">
+      <types:shape format="weave" example="examples/EventsExample.json"><![CDATA[%dw 2.0
+
+type EventsArray = Array<{|  id: Number {"typeId": "int"},   name: String,   date: String,   location: String,   "type": String,   description: String,   url: String,   news_url: String,   video_url: String,   feature_image: String|}> {"example": "[{\\\"id\\\":77,\\\"name\\\":\\\"2017 NASA Astronaut class graduation ceremony\\\",\\\"date\\\":\\\"2020-01-10T15:30:00Z\\\",\\\"location\\\":\\\"NASA's Johnson Space Center, Houston, TX, USA\\\",\\\"type\\\":\\\"Press Event\\\",\\\"description\\\":\\\"NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency\u2019s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.\\\",\\\"url\\\":\\\"https:\\/\\/ll.thespacedevs.com\\/2.2.0\\/event\\/77\\/\\\",\\\"news_url\\\":\\\"https:\\/\\/www.nasa.gov\\/press-release\\/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions\\\",\\\"video_url\\\":\\\"https:\\/\\/www.youtube.com\\/watch?v=xo58EoT987M\\\",\\\"feature_image\\\":\\\"https:\\/\\/spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com\\/media\\/event_images\\/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg\\\"},{\\\"id\\\":60,\\\"name\\\":\\\"70th International Astronautical Congress\\\",\\\"date\\\":\\\"2019-10-25T21:00:00Z\\\",\\\"location\\\":\\\"Washington D.C, United States\\\",\\\"type\\\":\\\"Press Event\\\",\\\"description\\\":\\\"The International Astronautical Congress is a yearly conference where key figures in the space industry meet and showcase\\/discuss events in the spaceflight industry.\\\\r\\\\n\\\\r\\\\nThe event lasts starts on 21st October and lasts a week. Some of the panels will be live streamed for free on NASA TV.\\\",\\\"url\\\":\\\"https:\\/\\/ll.thespacedevs.com\\/2.2.0\\/event\\/60\\/\\\",\\\"news_url\\\":\\\"https:\\/\\/www.iac2019.org\\/\\\",\\\"video_url\\\":\\\"https:\\/\\/www.youtube.com\\/watch?v=21X5lGlDOfg\\\",\\\"feature_image\\\":\\\"https:\\/\\/spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com\\/media\\/event_images\\/70th2520international2520astronautical2520congress_image_20191019002059.png\\\"}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="InputEvents" format="json">
+      <types:shape format="weave" example="examples/InputEventsExample-1.json"><![CDATA[%dw 2.0
+
+type InputEvents = {|
+  count: Number {"typeId": "int"}, 
+  next: String, 
+  previous: Null, 
+  results: Array<{|    id: Number {"typeId": "int"},     url: String,     slug: String,     name: String,     "type": {|      id: Number {"typeId": "int"},       name: String    |},     description: String,     location: String,     news_url: String,     video_url: String,     feature_image: String,     date: String,     launches: Array<Any>, 
+    expeditions: Array<Any>, 
+    spacestations: Array<Any>, 
+    program: Array<Any>
+  |}>
+|} {"example": "{\\\"count\\\":301,\\\"next\\\":\\\"https:\\/\\/ll.thespacedevs.com\\/2.0.0\\/event\\/?limit=10&offset=10\\\",\\\"previous\\\":null,\\\"results\\\":[{\\\"id\\\":77,\\\"url\\\":\\\"https:\\/\\/ll.thespacedevs.com\\/2.2.0\\/event\\/77\\/\\\",\\\"slug\\\":\\\"2017-nasa-astronaut-class-graduation-ceremony\\\",\\\"name\\\":\\\"2017 NASA Astronaut class graduation ceremony\\\",\\\"type\\\":{\\\"id\\\":20,\\\"name\\\":\\\"Press Event\\\"},\\\"description\\\":\\\"NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency\u2019s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.\\\",\\\"location\\\":\\\"NASA's Johnson Space Center, Houston, TX, USA\\\",\\\"news_url\\\":\\\"https:\\/\\/www.nasa.gov\\/press-release\\/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions\\\",\\\"video_url\\\":\\\"https:\\/\\/www.youtube.com\\/watch?v=xo58EoT987M\\\",\\\"feature_image\\\":\\\"https:\\/\\/spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com\\/media\\/event_images\\/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg\\\",\\\"date\\\":\\\"2020-01-10T15:30:00Z\\\",\\\"launches\\\":[],\\\"expeditions\\\":[],\\\"spacestations\\\":[],\\\"program\\\":[]},{\\\"id\\\":77,\\\"url\\\":\\\"https:\\/\\/ll.thespacedevs.com\\/2.2.0\\/event\\/77\\/\\\",\\\"slug\\\":\\\"2017-nasa-astronaut-class-graduation-ceremony\\\",\\\"name\\\":\\\"2017 NASA Astronaut class graduation ceremony\\\",\\\"type\\\":{\\\"id\\\":20,\\\"name\\\":\\\"Press Event\\\"},\\\"description\\\":\\\"NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency\u2019s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.\\\",\\\"location\\\":\\\"NASA's Johnson Space Center, Houston, TX, USA\\\",\\\"news_url\\\":\\\"https:\\/\\/www.nasa.gov\\/press-release\\/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions\\\",\\\"video_url\\\":\\\"https:\\/\\/www.youtube.com\\/watch?v=xo58EoT987M\\\",\\\"feature_image\\\":\\\"https:\\/\\/spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com\\/media\\/event_images\\/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg\\\",\\\"date\\\":\\\"2020-01-10T15:30:00Z\\\",\\\"launches\\\":[],\\\"expeditions\\\":[],\\\"spacestations\\\":[],\\\"program\\\":[]}]}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="InputSingleEvent" format="json">
+      <types:shape format="weave" example="examples/InputSingleScaceEventExample.json"><![CDATA[%dw 2.0
+
+type InputSingleEvent = {|
+  id: Number {"typeId": "int"}, 
+  url: String, 
+  slug: String, 
+  name: String, 
+  "type": {|
+    id: Number {"typeId": "int"}, 
+    name: String
+  |}, 
+  description: String, 
+  location: String, 
+  news_url: String, 
+  video_url: String, 
+  feature_image: String, 
+  date: String, 
+  launches: Array<Any>, 
+  expeditions: Array<Any>, 
+  spacestations: Array<Any>, 
+  program: Array<Any>
+|} {"example": "{\\\"id\\\":77,\\\"url\\\":\\\"https:\\/\\/ll.thespacedevs.com\\/2.2.0\\/event\\/77\\/\\\",\\\"slug\\\":\\\"2017-nasa-astronaut-class-graduation-ceremony\\\",\\\"name\\\":\\\"2017 NASA Astronaut class graduation ceremony\\\",\\\"type\\\":{\\\"id\\\":20,\\\"name\\\":\\\"Press Event\\\"},\\\"description\\\":\\\"NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency\u2019s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.\\\",\\\"location\\\":\\\"NASA's Johnson Space Center, Houston, TX, USA\\\",\\\"news_url\\\":\\\"https:\\/\\/www.nasa.gov\\/press-release\\/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions\\\",\\\"video_url\\\":\\\"https:\\/\\/www.youtube.com\\/watch?v=xo58EoT987M\\\",\\\"feature_image\\\":\\\"https:\\/\\/spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com\\/media\\/event_images\\/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg\\\",\\\"date\\\":\\\"2020-01-10T15:30:00Z\\\",\\\"launches\\\":[],\\\"expeditions\\\":[],\\\"spacestations\\\":[],\\\"program\\\":[]}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="SingleEvent" format="json">
+      <types:shape format="weave" example="examples/SingleEventExample.json"><![CDATA[%dw 2.0
+
+type SingleEvent = {|
+  id: Number {"typeId": "int"}, 
+  name: String, 
+  date: String, 
+  picture_of_the_day: {|
+    hdurl: String, 
+    explanation: String
+  |}, 
+  location: String, 
+  "type": String, 
+  description: String, 
+  url: String, 
+  news_url: String, 
+  video_url: String, 
+  feature_image: String
+|} {"example": "{\\\"id\\\":60,\\\"name\\\":\\\"70th International Astronautical Congress\\\",\\\"date\\\":\\\"2019-10-25T21:00:00Z\\\",\\\"picture_of_the_day\\\":{\\\"hdurl\\\":\\\"https:\\/\\/apod.nasa.gov\\/apod\\/image\\/2001\\/NacreousPMHeden.jpg\\\",\\\"explanation\\\":\\\"Vivid and lustrous, wafting iridescent waves of color filled this mountain and skyscape near Tanndalen\\\"},\\\"location\\\":\\\"Washington D.C, United States\\\",\\\"type\\\":\\\"Press Event\\\",\\\"description\\\":\\\"The International Astronautical Congress is a yearly conference where key figures in the space industry meet and showcase\\/discuss events in the spaceflight industry.\\\\r\\\\n\\\\r\\\\nThe event lasts starts on 21st October and lasts a week. Some of the panels will be live streamed for free on NASA TV.\\\",\\\"url\\\":\\\"https:\\/\\/ll.thespacedevs.com\\/2.2.0\\/event\\/60\\/\\\",\\\"news_url\\\":\\\"https:\\/\\/www.iac2019.org\\/\\\",\\\"video_url\\\":\\\"https:\\/\\/www.youtube.com\\/watch?v=21X5lGlDOfg\\\",\\\"feature_image\\\":\\\"https:\\/\\/spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com\\/media\\/event_images\\/70th2520international2520astronautical2520congress_image_20191019002059.png\\\"}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#f30aa99c-222e-4ef7-bb05-99cbb7fee47c">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="InputEvents"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="EventsArray"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#77a43f68-7520-4ace-a4a7-be7777484fb0">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="SingleEvent"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#7d010102-d3fe-46f9-8036-528b591ea2e9">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="InputSingleEvent"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="SingleEvent"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#e9586bc6-9fc7-44bb-916c-099c82744279">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="InputEvents"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="EventsArray"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#f3df7419-f2ab-407e-89fe-c4b4048ee869"/>
+  <types:enrichment select="#93806bfd-bc9f-4ec0-b8a9-a5294ef33daa"/>
+</types:mule>

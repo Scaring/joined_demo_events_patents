@@ -1,0 +1,20 @@
+http:
+  port: "8044"
+  
+thespacedevs:
+  host: "lldev.thespacedevs.com"
+  basepath: "/2.0.0"
+  
+nasa:
+  host: "api.nasa.gov"
+  basepath: "/planetary"
+  api_key: "vej4yJeNbdS1bjusRgsbUGZf0WA9cXOoOV62Kua5"
+  
+validate:
+  event_type: "^(Moon Landing|Flyby|Press Event|Docking|Undocking|Landing|Launch|Rehearsal|Relocation|Release|Celestial Event|Unknown|EVA|Berthing|Static Fire|Spacecraft Event|Abort Test|Hatch Opening|Test Flight|Change of Command|Orbital Insertion|Farewell Ceremony|Ambient Pressure Test|Cryoproof Test|Wet Dress Rehearsal)$"
+  error_message_type: "Invalid event type, must be one of the next (Moon_Landing|Flyby|Press_Event|Docking|Undocking|Landing) etc!"
+  period: "^([0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]))|(^[0-9]{4}-(0[1-9]|1[0-2]))|(^[0-9]{4})$"
+  error_message_period: "Invalid period, must be (yyyy | yyyy-mm | yyyy-mm-dd)!"
+  error_message_notFound: "By your query events not found!"
+  tooManyRecords: "We found too many records for your query, try one of the next!"
+  

@@ -1,0 +1,1248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<munit:config name="implementation-test-suite.xml" />
+	<munit:test name="getSpaceEventsTest-without-query-limit-specified" doc:id="667e9679-7f10-46e5-822f-c046cb8276f9" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="set-mock-data" doc:id="dc1fa806-6e6e-4583-a4cd-f862c7d9e6e5" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="apiResponse" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "count": 283,
+    "next": "https://lldev.thespacedevs.com/2.0.0/event/?limit=3&offset=3",
+    "previous": null,
+    "results": [
+        {
+            "id": 77,
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/77/",
+            "slug": "2017-nasa-astronaut-class-graduation-ceremony",
+            "name": "2017 NASA Astronaut class graduation ceremony",
+            "type": {
+                "id": 20,
+                "name": "Press Event"
+            },
+            "description": "NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency’s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.",
+            "location": "NASA's Johnson Space Center, Houston, TX, USA",
+            "news_url": "https://www.nasa.gov/press-release/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions",
+            "video_url": "https://www.youtube.com/watch?v=xo58EoT987M",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg",
+            "date": "2020-01-10T15:30:00Z",
+            "launches": [],
+            "expeditions": [],
+            "spacestations": [],
+            "program": []
+        },
+        {
+            "id": 60,
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/60/",
+            "slug": "70th-international-astronautical-congress",
+            "name": "70th International Astronautical Congress",
+            "type": {
+                "id": 20,
+                "name": "Press Event"
+            },
+            "description": "The International Astronautical Congress is a yearly conference where key figures in the space industry meet and showcase/discuss events in the spaceflight industry.\r\n\r\nThe event lasts starts on 21st October and lasts a week. Some of the panels will be live streamed for free on NASA TV.",
+            "location": "Washington D.C, United States",
+            "news_url": "https://www.iac2019.org/",
+            "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/70th2520international2520astronautical2520congress_image_20191019002059.png",
+            "date": "2019-10-25T21:00:00Z",
+            "launches": [],
+            "expeditions": [],
+            "spacestations": [],
+            "program": []
+        },
+        {
+            "id": 198,
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/198/",
+            "slug": "8th-meeting-of-the-national-space-council",
+            "name": "8th meeting of the National Space Council",
+            "type": {
+                "id": 20,
+                "name": "Press Event"
+            },
+            "description": "US Vice President Mike Pence will convene the 8th meeting of the National Space Council at NASA's Kennedy Space Center on December 9 at 12:30 p.m. ET. \r\n\r\nThe meeting will be livestreamed on NASA TV.",
+            "location": "Kennedy Space Center",
+            "news_url": null,
+            "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/8th_meeting_of__image_20201201090808.jpeg",
+            "date": "2020-12-09T17:30:00Z",
+            "launches": [],
+            "expeditions": [],
+            "spacestations": [],
+            "program": []
+        }
+    ]
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="getSpaceEvents" doc:id="9e38bbe9-e41d-487b-9a3f-72d65fe4e856" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="GET /events" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="91e6047d-a590-4879-97ee-94dec39ad916" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.apiResponse]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="to-getSpaceEvents" doc:id="9b3ead9f-3359-423b-82eb-755f90502a08" name="getSpaceEvents"/>
+			<ee:transform doc:name="expected-flow-response" doc:id="f6e8e2c4-f57a-4636-820b-31c60df8d08b" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="flowResponse" ><![CDATA[%dw 2.0
+output application/json
+---
+[
+    {
+        "id": 77,
+        "name": "2017 NASA Astronaut class graduation ceremony",
+        "date": "2020-01-10T15:30:00Z",
+        "location": "NASA's Johnson Space Center, Houston, TX, USA",
+        "type": "Press Event",
+        "description": "NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency’s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.",
+        "url": "https://lldev.thespacedevs.com/2.2.0/event/77/",
+        "news_url": "https://www.nasa.gov/press-release/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions",
+        "video_url": "https://www.youtube.com/watch?v=xo58EoT987M",
+        "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg"
+    },
+    {
+        "id": 60,
+        "name": "70th International Astronautical Congress",
+        "date": "2019-10-25T21:00:00Z",
+        "location": "Washington D.C, United States",
+        "type": "Press Event",
+        "description": "The International Astronautical Congress is a yearly conference where key figures in the space industry meet and showcase/discuss events in the spaceflight industry.\r\n\r\nThe event lasts starts on 21st October and lasts a week. Some of the panels will be live streamed for free on NASA TV.",
+        "url": "https://lldev.thespacedevs.com/2.2.0/event/60/",
+        "news_url": "https://www.iac2019.org/",
+        "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+        "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/70th2520international2520astronautical2520congress_image_20191019002059.png"
+    },
+    {
+        "id": 198,
+        "name": "8th meeting of the National Space Council",
+        "date": "2020-12-09T17:30:00Z",
+        "location": "Kennedy Space Center",
+        "type": "Press Event",
+        "description": "US Vice President Mike Pence will convene the 8th meeting of the National Space Council at NASA's Kennedy Space Center on December 9 at 12:30 p.m. ET. \r\n\r\nThe meeting will be livestreamed on NASA TV.",
+        "url": "https://lldev.thespacedevs.com/2.2.0/event/198/",
+        "news_url": null,
+        "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+        "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/8th_meeting_of__image_20201201090808.jpeg"
+    }
+]]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="3d2ede0a-514b-46b2-97e3-a7cb68a72cd4" is='#[MunitTools::equalTo(vars.flowResponse)]' expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="getSpaceEventsTest-query-spaceEventType-Press_Event" doc:id="806bc22b-9f2b-4f99-a381-fe36e8d4f9b8" description="Test">
+			<munit:behavior>
+				<ee:transform doc:name="set-mock-data Press_Event" doc:id="43c79533-014c-4f51-a480-1666e411fe9f">
+					<ee:message />
+					<ee:variables>
+					<ee:set-variable variableName="apiResponse" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "count": 283,
+    "next": "https://lldev.thespacedevs.com/2.0.0/event/?limit=3&offset=3",
+    "previous": null,
+    "results": [
+        {
+            "id": 77,
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/77/",
+            "slug": "2017-nasa-astronaut-class-graduation-ceremony",
+            "name": "2017 NASA Astronaut class graduation ceremony",
+            "type": {
+                "id": 20,
+                "name": "Press Event"
+            },
+            "description": "NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency’s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.",
+            "location": "NASA's Johnson Space Center, Houston, TX, USA",
+            "news_url": "https://www.nasa.gov/press-release/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions",
+            "video_url": "https://www.youtube.com/watch?v=xo58EoT987M",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg",
+            "date": "2020-01-10T15:30:00Z",
+            "launches": [],
+            "expeditions": [],
+            "spacestations": [],
+            "program": []
+        },
+        {
+            "id": 60,
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/60/",
+            "slug": "70th-international-astronautical-congress",
+            "name": "70th International Astronautical Congress",
+            "type": {
+                "id": 20,
+                "name": "Press Event"
+            },
+            "description": "The International Astronautical Congress is a yearly conference where key figures in the space industry meet and showcase/discuss events in the spaceflight industry.\r\n\r\nThe event lasts starts on 21st October and lasts a week. Some of the panels will be live streamed for free on NASA TV.",
+            "location": "Washington D.C, United States",
+            "news_url": "https://www.iac2019.org/",
+            "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/70th2520international2520astronautical2520congress_image_20191019002059.png",
+            "date": "2019-10-25T21:00:00Z",
+            "launches": [],
+            "expeditions": [],
+            "spacestations": [],
+            "program": []
+        },
+        {
+            "id": 198,
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/198/",
+            "slug": "8th-meeting-of-the-national-space-council",
+            "name": "8th meeting of the National Space Council",
+            "type": {
+                "id": 20,
+                "name": "Press Event"
+            },
+            "description": "US Vice President Mike Pence will convene the 8th meeting of the National Space Council at NASA's Kennedy Space Center on December 9 at 12:30 p.m. ET. \r\n\r\nThe meeting will be livestreamed on NASA TV.",
+            "location": "Kennedy Space Center",
+            "news_url": null,
+            "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/8th_meeting_of__image_20201201090808.jpeg",
+            "date": "2020-12-09T17:30:00Z",
+            "launches": [],
+            "expeditions": [],
+            "spacestations": [],
+            "program": []
+        }
+    ]
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<munit-tools:mock-when doc:name="getSpaceEvents" doc:id="11bad3c7-7aea-4e00-a4a5-210651138c8c" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="GET /events" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="91e6047d-a590-4879-97ee-94dec39ad916" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.apiResponse]" mediaType="application/json" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<munit:set-event doc:name="queryParams_type_Press_Event" doc:id="f74ae4f5-f905-4ead-b1e7-0bf0f298ef16" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{limit:3, "type":"Press Event"}]' />
+				</munit:set-event>
+				<flow-ref doc:name="to-getSpaceEvents" doc:id="b897cd12-0fff-4d7c-b887-3f82134e94ff" name="getSpaceEvents" />
+				<ee:transform doc:name="expected-flow-response" doc:id="8893663c-717a-4a65-a442-1fac1d453fed">
+					<ee:message />
+					<ee:variables>
+						<ee:set-variable variableName="flow-response"><![CDATA[%dw 2.0
+output application/json
+---
+[
+        {
+            "id": 77,
+            "name": "2017 NASA Astronaut class graduation ceremony",
+            "date": "2020-01-10T15:30:00Z",
+            "location": "NASA's Johnson Space Center, Houston, TX, USA",
+            "type": "Press Event",
+            "description": "NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency’s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.",
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/77/",
+            "news_url": "https://www.nasa.gov/press-release/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions",
+            "video_url": "https://www.youtube.com/watch?v=xo58EoT987M",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg"
+        },
+        {
+            "id": 60,
+            "name": "70th International Astronautical Congress",
+            "date": "2019-10-25T21:00:00Z",
+            "location": "Washington D.C, United States",
+            "type": "Press Event",
+            "description": "The International Astronautical Congress is a yearly conference where key figures in the space industry meet and showcase/discuss events in the spaceflight industry.\r\n\r\nThe event lasts starts on 21st October and lasts a week. Some of the panels will be live streamed for free on NASA TV.",
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/60/",
+            "news_url": "https://www.iac2019.org/",
+            "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/70th2520international2520astronautical2520congress_image_20191019002059.png"
+        },
+        {
+            "id": 198,
+            "name": "8th meeting of the National Space Council",
+            "date": "2020-12-09T17:30:00Z",
+            "location": "Kennedy Space Center",
+            "type": "Press Event",
+            "description": "US Vice President Mike Pence will convene the 8th meeting of the National Space Council at NASA's Kennedy Space Center on December 9 at 12:30 p.m. ET. \r\n\r\nThe meeting will be livestreamed on NASA TV.",
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/198/",
+            "news_url": null,
+            "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/8th_meeting_of__image_20201201090808.jpeg"
+        }
+]]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-that doc:name="Assert that" doc:id="e08543d1-6d22-4dfc-846c-45dde8586177" is='#[MunitTools::equalTo(vars."flow-response")]' expression="#[payload]" />
+			</munit:validation>
+		</munit:test>
+	<munit:test name="getSpaceEventsTest-query-period" doc:id="127d5e65-3871-416c-953e-b5babc8cac44" description="Test">
+			<munit:behavior>
+				<ee:transform doc:name="mock-data period" doc:id="87048b89-6c54-4f67-b846-8e85b292506a">
+					<ee:message />
+					<ee:variables>
+					<ee:set-variable variableName="apiResponse" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "count": 283,
+    "next": "https://lldev.thespacedevs.com/2.0.0/event/?limit=3&offset=3",
+    "previous": null,
+    "results": [
+        {
+            "id": 77,
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/77/",
+            "slug": "2017-nasa-astronaut-class-graduation-ceremony",
+            "name": "2017 NASA Astronaut class graduation ceremony",
+            "type": {
+                "id": 20,
+                "name": "Press Event"
+            },
+            "description": "NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency’s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.",
+            "location": "NASA's Johnson Space Center, Houston, TX, USA",
+            "news_url": "https://www.nasa.gov/press-release/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions",
+            "video_url": "https://www.youtube.com/watch?v=xo58EoT987M",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg",
+            "date": "2020-01-10T15:30:00Z",
+            "launches": [],
+            "expeditions": [],
+            "spacestations": [],
+            "program": []
+        },
+        {
+            "id": 60,
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/60/",
+            "slug": "70th-international-astronautical-congress",
+            "name": "70th International Astronautical Congress",
+            "type": {
+                "id": 20,
+                "name": "Press Event"
+            },
+            "description": "The International Astronautical Congress is a yearly conference where key figures in the space industry meet and showcase/discuss events in the spaceflight industry.\r\n\r\nThe event lasts starts on 21st October and lasts a week. Some of the panels will be live streamed for free on NASA TV.",
+            "location": "Washington D.C, United States",
+            "news_url": "https://www.iac2019.org/",
+            "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/70th2520international2520astronautical2520congress_image_20191019002059.png",
+            "date": "2019-10-25T21:00:00Z",
+            "launches": [],
+            "expeditions": [],
+            "spacestations": [],
+            "program": []
+        },
+        {
+            "id": 198,
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/198/",
+            "slug": "8th-meeting-of-the-national-space-council",
+            "name": "8th meeting of the National Space Council",
+            "type": {
+                "id": 20,
+                "name": "Press Event"
+            },
+            "description": "US Vice President Mike Pence will convene the 8th meeting of the National Space Council at NASA's Kennedy Space Center on December 9 at 12:30 p.m. ET. \r\n\r\nThe meeting will be livestreamed on NASA TV.",
+            "location": "Kennedy Space Center",
+            "news_url": null,
+            "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/8th_meeting_of__image_20201201090808.jpeg",
+            "date": "2020-12-09T17:30:00Z",
+            "launches": [],
+            "expeditions": [],
+            "spacestations": [],
+            "program": []
+        }
+    ]
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<munit-tools:mock-when doc:name="getSpaceEvents" doc:id="2536f610-2788-4e1b-aebf-19278ce306ee" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="GET /events" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="91e6047d-a590-4879-97ee-94dec39ad916" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.apiResponse]" mediaType="application/json" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<munit:set-event doc:name="queryParams_period_2020" doc:id="9b9adce5-7167-40a9-a9a1-6d6e67132957" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{limit:3, period:"2020"}]' />
+				</munit:set-event>
+				<flow-ref doc:name="to-getSpaceEvents" doc:id="e584cf8a-4bc9-4d16-8ce5-664d856ae19d" name="getSpaceEvents" />
+				<ee:transform doc:name="expected-flow-response" doc:id="97973155-be1c-4666-a019-c3981040693e">
+					<ee:message />
+					<ee:variables>
+						<ee:set-variable variableName="flow-response"><![CDATA[%dw 2.0
+output application/json
+---
+[
+        {
+            "id": 77,
+            "name": "2017 NASA Astronaut class graduation ceremony",
+            "date": "2020-01-10T15:30:00Z",
+            "location": "NASA's Johnson Space Center, Houston, TX, USA",
+            "type": "Press Event",
+            "description": "NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency’s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.",
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/77/",
+            "news_url": "https://www.nasa.gov/press-release/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions",
+            "video_url": "https://www.youtube.com/watch?v=xo58EoT987M",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg"
+        },
+        {
+            "id": 198,
+            "name": "8th meeting of the National Space Council",
+            "date": "2020-12-09T17:30:00Z",
+            "location": "Kennedy Space Center",
+            "type": "Press Event",
+            "description": "US Vice President Mike Pence will convene the 8th meeting of the National Space Council at NASA's Kennedy Space Center on December 9 at 12:30 p.m. ET. \r\n\r\nThe meeting will be livestreamed on NASA TV.",
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/198/",
+            "news_url": null,
+            "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/8th_meeting_of__image_20201201090808.jpeg"
+        }
+]]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-that doc:name="Assert that" doc:id="cd16982e-7fda-40d6-a1c6-18482771a996" is='#[MunitTools::equalTo(vars."flow-response")]' expression="#[payload]" />
+			</munit:validation>
+		</munit:test>
+	<munit:test name="getSpaceEventsTest-query-period-eventType" doc:id="61b4ab2b-3f0b-4ce2-a62e-cc3435a83f27" description="Test">
+			<munit:behavior>
+				<ee:transform doc:name="set-mock-data" doc:id="2ff5ec77-98f6-475a-b0a9-d39720268257">
+					<ee:message />
+					<ee:variables>
+						<ee:set-variable variableName="apiResponse"><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "count": 283,
+    "next": "https://lldev.thespacedevs.com/2.0.0/event/?limit=3&offset=3",
+    "previous": null,
+    "results": [
+        {
+            "id": 77,
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/77/",
+            "slug": "2017-nasa-astronaut-class-graduation-ceremony",
+            "name": "2017 NASA Astronaut class graduation ceremony",
+            "type": {
+                "id": 20,
+                "name": "Press Event"
+            },
+            "description": "NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency’s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.",
+            "location": "NASA's Johnson Space Center, Houston, TX, USA",
+            "news_url": "https://www.nasa.gov/press-release/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions",
+            "video_url": "https://www.youtube.com/watch?v=xo58EoT987M",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg",
+            "date": "2020-01-10T15:30:00Z",
+            "launches": [],
+            "expeditions": [],
+            "spacestations": [],
+            "program": []
+        },
+        {
+            "id": 60,
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/60/",
+            "slug": "70th-international-astronautical-congress",
+            "name": "70th International Astronautical Congress",
+            "type": {
+                "id": 20,
+                "name": "Press Event"
+            },
+            "description": "The International Astronautical Congress is a yearly conference where key figures in the space industry meet and showcase/discuss events in the spaceflight industry.\r\n\r\nThe event lasts starts on 21st October and lasts a week. Some of the panels will be live streamed for free on NASA TV.",
+            "location": "Washington D.C, United States",
+            "news_url": "https://www.iac2019.org/",
+            "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/70th2520international2520astronautical2520congress_image_20191019002059.png",
+            "date": "2019-10-25T21:00:00Z",
+            "launches": [],
+            "expeditions": [],
+            "spacestations": [],
+            "program": []
+        },
+        {
+            "id": 198,
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/198/",
+            "slug": "8th-meeting-of-the-national-space-council",
+            "name": "8th meeting of the National Space Council",
+            "type": {
+                "id": 20,
+                "name": "Flyby"
+            },
+            "description": "US Vice President Mike Pence will convene the 8th meeting of the National Space Council at NASA's Kennedy Space Center on December 9 at 12:30 p.m. ET. \r\n\r\nThe meeting will be livestreamed on NASA TV.",
+            "location": "Kennedy Space Center",
+            "news_url": null,
+            "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/8th_meeting_of__image_20201201090808.jpeg",
+            "date": "2020-12-09T17:30:00Z",
+            "launches": [],
+            "expeditions": [],
+            "spacestations": [],
+            "program": []
+        }
+    ]
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<munit-tools:mock-when doc:name="getSpaceEvents" doc:id="fb1810f4-1071-4739-9c6e-05c60617a64f" processor="http:request">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="GET /events" attributeName="doc:name" />
+						<munit-tools:with-attribute whereValue="91e6047d-a590-4879-97ee-94dec39ad916" attributeName="doc:id" />
+						<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
+					</munit-tools:with-attributes>
+					<munit-tools:then-return>
+						<munit-tools:payload value="#[vars.apiResponse]" mediaType="application/json" />
+					</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<munit:set-event doc:name="queryParams_period_2020_type_Press_Event" doc:id="d5da1bb6-e82e-4a6b-a86d-8cc31842a134" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{limit:3, period:"2020","type":"Press Event"}]' />
+				</munit:set-event>
+				<flow-ref doc:name="to-getSpaceEvents" doc:id="dcb2f919-f672-4dbb-97dc-db5df4fd25bb" name="getSpaceEvents" />
+				<ee:transform doc:name="expected-flow-response" doc:id="68516b07-ea36-45a3-93ec-c62b744e12a3">
+					<ee:message />
+					<ee:variables>
+						<ee:set-variable variableName="flow-response"><![CDATA[%dw 2.0
+output application/json
+---
+[
+        {
+            "id": 77,
+            "name": "2017 NASA Astronaut class graduation ceremony",
+            "date": "2020-01-10T15:30:00Z",
+            "location": "NASA's Johnson Space Center, Houston, TX, USA",
+            "type": "Press Event",
+            "description": "NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency’s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.",
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/77/",
+            "news_url": "https://www.nasa.gov/press-release/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions",
+            "video_url": "https://www.youtube.com/watch?v=xo58EoT987M",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg"
+        }
+]]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-that doc:name="Assert that" doc:id="c0e36bd0-6eb5-46ae-8516-6acb43388624" is='#[MunitTools::equalTo(vars."flow-response")]' expression="#[payload]" />
+			</munit:validation>
+		</munit:test>
+	<munit:test name="getUpcomingSpaceEventsTest" doc:id="bee24265-f8ed-4132-b8a1-3c49576efe11" description="Test">
+			<munit:behavior>
+				<ee:transform doc:name="set-mock-data" doc:id="1be80919-c683-4998-87d7-9b662692b661">
+					<ee:message />
+					<ee:variables>
+						<ee:set-variable variableName="mockedApiResponse"><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "count": 2,
+    "next": "https://lldev.thespacedevs.com/2.0.0/event/upcoming/?limit=10&offset=10",
+    "previous": null,
+    "results": [
+        {
+            "id": 275,
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/275/",
+            "slug": "crs-23-dragon-docking",
+            "name": "CRS-23 Dragon Docking",
+            "type": {
+                "id": 2,
+                "name": "Docking"
+            },
+            "description": "Following its launch atop a Falcon 9, the CRS-23 Dragon will autonomously dock to the ISS, bringing crew supplies as well as experiments.",
+            "location": "International Space Station",
+            "news_url": null,
+            "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/crs-23_dragon_d_image_20210519074125.jpeg",
+            "date": "2021-08-19T00:00:00Z",
+            "launches": [
+                {
+                    "id": "13386512-85bb-4c93-a9b0-f5eac05fbe4f",
+                    "url": "https://lldev.thespacedevs.com/2.2.0/launch/13386512-85bb-4c93-a9b0-f5eac05fbe4f/",
+                    "launch_library_id": null,
+                    "slug": "falcon-9-block-5-dragon-crs-2-spx-23",
+                    "name": "Falcon 9 Block 5 | Dragon CRS-2 SpX-23",
+                    "status": {
+                        "id": 2,
+                        "name": "TBD"
+                    },
+                    "net": "2021-08-18T00:00:00Z",
+                    "window_end": "2021-08-18T00:00:00Z",
+                    "window_start": "2021-08-18T00:00:00Z",
+                    "inhold": false,
+                    "tbdtime": false,
+                    "tbddate": false,
+                    "probability": null,
+                    "holdreason": "",
+                    "failreason": "",
+                    "hashtag": null,
+                    "launch_service_provider": {
+                        "id": 121,
+                        "url": "https://lldev.thespacedevs.com/2.2.0/agencies/121/",
+                        "name": "SpaceX",
+                        "type": "Commercial"
+                    },
+                    "rocket": {
+                        "id": 2887,
+                        "configuration": {
+                            "id": 164,
+                            "launch_library_id": 188,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/config/launcher/164/",
+                            "name": "Falcon 9 Block 5",
+                            "family": "Falcon",
+                            "full_name": "Falcon 9 Block 5",
+                            "variant": "Block 5"
+                        }
+                    },
+                    "mission": {
+                        "id": 1303,
+                        "launch_library_id": null,
+                        "name": "Dragon CRS-2 SpX-23",
+                        "description": "SpaceX will launch the cargo variant of its Dragon 2 spacecraft on their 23rd commercial resupply services mission to the International Space Station. The flight will be conducted under the second Commercial Resupply Services contract with NASA.\r\n\r\nDragon will be filled with supplies and payloads, including critical materials to directly support science and research investigations that occur onboard the orbiting laboratory.",
+                        "launch_designator": null,
+                        "type": "Resupply",
+                        "orbit": {
+                            "id": 8,
+                            "name": "Low Earth Orbit",
+                            "abbrev": "LEO"
+                        }
+                    },
+                    "pad": {
+                        "id": 87,
+                        "url": "https://lldev.thespacedevs.com/2.2.0/pad/87/",
+                        "agency_id": null,
+                        "name": "Launch Complex 39A",
+                        "info_url": null,
+                        "wiki_url": "https://en.wikipedia.org/wiki/Kennedy_Space_Center_Launch_Complex_39#Launch_Pad_39A",
+                        "map_url": "http://maps.google.com/maps?q=28.608+N,+80.604+W",
+                        "latitude": "28.60822681",
+                        "longitude": "-80.60428186",
+                        "location": {
+                            "id": 27,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/location/27/",
+                            "name": "Kennedy Space Center, FL, USA",
+                            "country_code": "USA",
+                            "map_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launch_images/location_27_20200803142447.jpg",
+                            "total_launch_count": 189,
+                            "total_landing_count": 0
+                        },
+                        "map_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launch_images/pad_87_20200803143537.jpg",
+                        "total_launch_count": 132
+                    },
+                    "webcast_live": false,
+                    "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launch_images/falcon2520925_image_20210520085649.jpeg",
+                    "infographic": null,
+                    "program": [
+                        {
+                            "id": 11,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/program/11/",
+                            "name": "Commercial Resupply Services",
+                            "description": "Commercial Resupply Services (CRS) are a series of flights awarded by NASA for the delivery of cargo and supplies to the International Space Station.The first CRS contracts were signed in 2008 and awarded \$1.6 billion to SpaceX for twelve cargo Dragon and \$1.9 billion to Orbital Sciences for eight Cygnus flights, covering deliveries to 2016. The Falcon 9 and Antares rockets were also developed under the CRS program to deliver cargo spacecraft to the ISS.",
+                            "agencies": [
+                                {
+                                    "id": 44,
+                                    "url": "https://lldev.thespacedevs.com/2.2.0/agencies/44/",
+                                    "name": "National Aeronautics and Space Administration",
+                                    "type": "Government"
+                                },
+                                {
+                                    "id": 257,
+                                    "url": "https://lldev.thespacedevs.com/2.2.0/agencies/257/",
+                                    "name": "Northrop Grumman Innovation Systems",
+                                    "type": "Commercial"
+                                },
+                                {
+                                    "id": 1020,
+                                    "url": "https://lldev.thespacedevs.com/2.2.0/agencies/1020/",
+                                    "name": "Sierra Nevada Corporation",
+                                    "type": "Commercial"
+                                },
+                                {
+                                    "id": 121,
+                                    "url": "https://lldev.thespacedevs.com/2.2.0/agencies/121/",
+                                    "name": "SpaceX",
+                                    "type": "Commercial"
+                                }
+                            ],
+                            "image_url": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/program_images/commercial2520_program_20201129212219.png",
+                            "start_date": "2008-12-23T00:00:00Z",
+                            "end_date": null,
+                            "info_url": null,
+                            "wiki_url": "https://en.wikipedia.org/wiki/Commercial_Resupply_Services#Commercial_Resupply_Services"
+                        }
+                    ]
+                }
+            ],
+            "expeditions": [],
+            "spacestations": [
+                {
+                    "id": 4,
+                    "url": "https://lldev.thespacedevs.com/2.2.0/spacestation/4/",
+                    "name": "International Space Station",
+                    "status": {
+                        "id": 1,
+                        "name": "Active"
+                    },
+                    "founded": "1998-11-20",
+                    "description": "The International Space Station (ISS) is a space station, or a habitable artificial satellite, in low Earth orbit. Its first component was launched into orbit in 1998, with the first long-term residents arriving in November 2000. It has been inhabited continuously since that date. The last pressurised module was fitted in 2011, and an experimental inflatable space habitat was added in 2016. The station is expected to operate until 2030. Development and assembly of the station continues, with several new elements scheduled for launch in 2019. The ISS is the largest human-made body in low Earth orbit and can often be seen with the naked eye from Earth. The ISS consists of pressurised habitation modules, structural trusses, solar arrays, radiators, docking ports, experiment bays and robotic arms. ISS components have been launched by Russian Proton and Soyuz rockets, and American Space Shuttles.",
+                    "orbit": "Low Earth Orbit",
+                    "image_url": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/spacestation_images/international2520space2520station_image_20190220215716.jpeg"
+                }
+            ],
+            "program": [
+                {
+                    "id": 17,
+                    "url": "https://lldev.thespacedevs.com/2.2.0/program/17/",
+                    "name": "International Space Station",
+                    "description": "The International Space Station programme is tied together by a complex set of legal, political and financial agreements between the sixteen nations involved in the project, governing ownership of the various components, rights to crewing and utilization, and responsibilities for crew rotation and resupply of the International Space Station. It was conceived in 1984 by President Ronald Reagan, during the Space Station Freedom project as it was originally called.",
+                    "agencies": [
+                        {
+                            "id": 16,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/16/",
+                            "name": "Canadian Space Agency",
+                            "type": "Government"
+                        },
+                        {
+                            "id": 27,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/27/",
+                            "name": "European Space Agency",
+                            "type": "Multinational"
+                        },
+                        {
+                            "id": 37,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/37/",
+                            "name": "Japan Aerospace Exploration Agency",
+                            "type": "Government"
+                        },
+                        {
+                            "id": 44,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/44/",
+                            "name": "National Aeronautics and Space Administration",
+                            "type": "Government"
+                        },
+                        {
+                            "id": 63,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/63/",
+                            "name": "Russian Federal Space Agency (ROSCOSMOS)",
+                            "type": "Government"
+                        }
+                    ],
+                    "image_url": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/program_images/international2_program_20201129184745.png",
+                    "start_date": "1998-11-20T06:40:00Z",
+                    "end_date": null,
+                    "info_url": "https://www.nasa.gov/mission_pages/station/main/index.html",
+                    "wiki_url": "https://en.wikipedia.org/wiki/International_Space_Station_programme"
+                },
+                {
+                    "id": 11,
+                    "url": "https://lldev.thespacedevs.com/2.2.0/program/11/",
+                    "name": "Commercial Resupply Services",
+                    "description": "Commercial Resupply Services (CRS) are a series of flights awarded by NASA for the delivery of cargo and supplies to the International Space Station.The first CRS contracts were signed in 2008 and awarded \$1.6 billion to SpaceX for twelve cargo Dragon and \$1.9 billion to Orbital Sciences for eight Cygnus flights, covering deliveries to 2016. The Falcon 9 and Antares rockets were also developed under the CRS program to deliver cargo spacecraft to the ISS.",
+                    "agencies": [
+                        {
+                            "id": 44,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/44/",
+                            "name": "National Aeronautics and Space Administration",
+                            "type": "Government"
+                        },
+                        {
+                            "id": 257,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/257/",
+                            "name": "Northrop Grumman Innovation Systems",
+                            "type": "Commercial"
+                        },
+                        {
+                            "id": 1020,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/1020/",
+                            "name": "Sierra Nevada Corporation",
+                            "type": "Commercial"
+                        },
+                        {
+                            "id": 121,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/121/",
+                            "name": "SpaceX",
+                            "type": "Commercial"
+                        }
+                    ],
+                    "image_url": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/program_images/commercial2520_program_20201129212219.png",
+                    "start_date": "2008-12-23T00:00:00Z",
+                    "end_date": null,
+                    "info_url": null,
+                    "wiki_url": "https://en.wikipedia.org/wiki/Commercial_Resupply_Services#Commercial_Resupply_Services"
+                }
+            ]
+        },
+        {
+            "id": 276,
+            "url": "https://lldev.thespacedevs.com/2.2.0/event/276/",
+            "slug": "crs-23-dragon-undocking",
+            "name": "CRS-23 Dragon Undocking",
+            "type": {
+                "id": 8,
+                "name": "Undocking"
+            },
+            "description": "The SpaceX CRS-23 Dragon spacecraft will undock from the International Space Station ahead of its reentry, splashdown and recovery.",
+            "location": "International Space Station",
+            "news_url": null,
+            "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+            "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/crs-23_dragon_u_image_20210519074227.jpeg",
+            "date": "2021-09-12T00:00:00Z",
+            "launches": [
+                {
+                    "id": "13386512-85bb-4c93-a9b0-f5eac05fbe4f",
+                    "url": "https://lldev.thespacedevs.com/2.2.0/launch/13386512-85bb-4c93-a9b0-f5eac05fbe4f/",
+                    "launch_library_id": null,
+                    "slug": "falcon-9-block-5-dragon-crs-2-spx-23",
+                    "name": "Falcon 9 Block 5 | Dragon CRS-2 SpX-23",
+                    "status": {
+                        "id": 2,
+                        "name": "TBD"
+                    },
+                    "net": "2021-08-18T00:00:00Z",
+                    "window_end": "2021-08-18T00:00:00Z",
+                    "window_start": "2021-08-18T00:00:00Z",
+                    "inhold": false,
+                    "tbdtime": false,
+                    "tbddate": false,
+                    "probability": null,
+                    "holdreason": "",
+                    "failreason": "",
+                    "hashtag": null,
+                    "launch_service_provider": {
+                        "id": 121,
+                        "url": "https://lldev.thespacedevs.com/2.2.0/agencies/121/",
+                        "name": "SpaceX",
+                        "type": "Commercial"
+                    },
+                    "rocket": {
+                        "id": 2887,
+                        "configuration": {
+                            "id": 164,
+                            "launch_library_id": 188,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/config/launcher/164/",
+                            "name": "Falcon 9 Block 5",
+                            "family": "Falcon",
+                            "full_name": "Falcon 9 Block 5",
+                            "variant": "Block 5"
+                        }
+                    },
+                    "mission": {
+                        "id": 1303,
+                        "launch_library_id": null,
+                        "name": "Dragon CRS-2 SpX-23",
+                        "description": "SpaceX will launch the cargo variant of its Dragon 2 spacecraft on their 23rd commercial resupply services mission to the International Space Station. The flight will be conducted under the second Commercial Resupply Services contract with NASA.\r\n\r\nDragon will be filled with supplies and payloads, including critical materials to directly support science and research investigations that occur onboard the orbiting laboratory.",
+                        "launch_designator": null,
+                        "type": "Resupply",
+                        "orbit": {
+                            "id": 8,
+                            "name": "Low Earth Orbit",
+                            "abbrev": "LEO"
+                        }
+                    },
+                    "pad": {
+                        "id": 87,
+                        "url": "https://lldev.thespacedevs.com/2.2.0/pad/87/",
+                        "agency_id": null,
+                        "name": "Launch Complex 39A",
+                        "info_url": null,
+                        "wiki_url": "https://en.wikipedia.org/wiki/Kennedy_Space_Center_Launch_Complex_39#Launch_Pad_39A",
+                        "map_url": "http://maps.google.com/maps?q=28.608+N,+80.604+W",
+                        "latitude": "28.60822681",
+                        "longitude": "-80.60428186",
+                        "location": {
+                            "id": 27,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/location/27/",
+                            "name": "Kennedy Space Center, FL, USA",
+                            "country_code": "USA",
+                            "map_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launch_images/location_27_20200803142447.jpg",
+                            "total_launch_count": 189,
+                            "total_landing_count": 0
+                        },
+                        "map_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launch_images/pad_87_20200803143537.jpg",
+                        "total_launch_count": 132
+                    },
+                    "webcast_live": false,
+                    "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launch_images/falcon2520925_image_20210520085649.jpeg",
+                    "infographic": null,
+                    "program": [
+                        {
+                            "id": 11,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/program/11/",
+                            "name": "Commercial Resupply Services",
+                            "description": "Commercial Resupply Services (CRS) are a series of flights awarded by NASA for the delivery of cargo and supplies to the International Space Station.The first CRS contracts were signed in 2008 and awarded \$1.6 billion to SpaceX for twelve cargo Dragon and \$1.9 billion to Orbital Sciences for eight Cygnus flights, covering deliveries to 2016. The Falcon 9 and Antares rockets were also developed under the CRS program to deliver cargo spacecraft to the ISS.",
+                            "agencies": [
+                                {
+                                    "id": 44,
+                                    "url": "https://lldev.thespacedevs.com/2.2.0/agencies/44/",
+                                    "name": "National Aeronautics and Space Administration",
+                                    "type": "Government"
+                                },
+                                {
+                                    "id": 257,
+                                    "url": "https://lldev.thespacedevs.com/2.2.0/agencies/257/",
+                                    "name": "Northrop Grumman Innovation Systems",
+                                    "type": "Commercial"
+                                },
+                                {
+                                    "id": 1020,
+                                    "url": "https://lldev.thespacedevs.com/2.2.0/agencies/1020/",
+                                    "name": "Sierra Nevada Corporation",
+                                    "type": "Commercial"
+                                },
+                                {
+                                    "id": 121,
+                                    "url": "https://lldev.thespacedevs.com/2.2.0/agencies/121/",
+                                    "name": "SpaceX",
+                                    "type": "Commercial"
+                                }
+                            ],
+                            "image_url": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/program_images/commercial2520_program_20201129212219.png",
+                            "start_date": "2008-12-23T00:00:00Z",
+                            "end_date": null,
+                            "info_url": null,
+                            "wiki_url": "https://en.wikipedia.org/wiki/Commercial_Resupply_Services#Commercial_Resupply_Services"
+                        }
+                    ]
+                }
+            ],
+            "expeditions": [],
+            "spacestations": [
+                {
+                    "id": 4,
+                    "url": "https://lldev.thespacedevs.com/2.2.0/spacestation/4/",
+                    "name": "International Space Station",
+                    "status": {
+                        "id": 1,
+                        "name": "Active"
+                    },
+                    "founded": "1998-11-20",
+                    "description": "The International Space Station (ISS) is a space station, or a habitable artificial satellite, in low Earth orbit. Its first component was launched into orbit in 1998, with the first long-term residents arriving in November 2000. It has been inhabited continuously since that date. The last pressurised module was fitted in 2011, and an experimental inflatable space habitat was added in 2016. The station is expected to operate until 2030. Development and assembly of the station continues, with several new elements scheduled for launch in 2019. The ISS is the largest human-made body in low Earth orbit and can often be seen with the naked eye from Earth. The ISS consists of pressurised habitation modules, structural trusses, solar arrays, radiators, docking ports, experiment bays and robotic arms. ISS components have been launched by Russian Proton and Soyuz rockets, and American Space Shuttles.",
+                    "orbit": "Low Earth Orbit",
+                    "image_url": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/spacestation_images/international2520space2520station_image_20190220215716.jpeg"
+                }
+            ],
+            "program": [
+                {
+                    "id": 17,
+                    "url": "https://lldev.thespacedevs.com/2.2.0/program/17/",
+                    "name": "International Space Station",
+                    "description": "The International Space Station programme is tied together by a complex set of legal, political and financial agreements between the sixteen nations involved in the project, governing ownership of the various components, rights to crewing and utilization, and responsibilities for crew rotation and resupply of the International Space Station. It was conceived in 1984 by President Ronald Reagan, during the Space Station Freedom project as it was originally called.",
+                    "agencies": [
+                        {
+                            "id": 16,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/16/",
+                            "name": "Canadian Space Agency",
+                            "type": "Government"
+                        },
+                        {
+                            "id": 27,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/27/",
+                            "name": "European Space Agency",
+                            "type": "Multinational"
+                        },
+                        {
+                            "id": 37,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/37/",
+                            "name": "Japan Aerospace Exploration Agency",
+                            "type": "Government"
+                        },
+                        {
+                            "id": 44,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/44/",
+                            "name": "National Aeronautics and Space Administration",
+                            "type": "Government"
+                        },
+                        {
+                            "id": 63,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/63/",
+                            "name": "Russian Federal Space Agency (ROSCOSMOS)",
+                            "type": "Government"
+                        }
+                    ],
+                    "image_url": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/program_images/international2_program_20201129184745.png",
+                    "start_date": "1998-11-20T06:40:00Z",
+                    "end_date": null,
+                    "info_url": "https://www.nasa.gov/mission_pages/station/main/index.html",
+                    "wiki_url": "https://en.wikipedia.org/wiki/International_Space_Station_programme"
+                },
+                {
+                    "id": 11,
+                    "url": "https://lldev.thespacedevs.com/2.2.0/program/11/",
+                    "name": "Commercial Resupply Services",
+                    "description": "Commercial Resupply Services (CRS) are a series of flights awarded by NASA for the delivery of cargo and supplies to the International Space Station.The first CRS contracts were signed in 2008 and awarded \$1.6 billion to SpaceX for twelve cargo Dragon and \$1.9 billion to Orbital Sciences for eight Cygnus flights, covering deliveries to 2016. The Falcon 9 and Antares rockets were also developed under the CRS program to deliver cargo spacecraft to the ISS.",
+                    "agencies": [
+                        {
+                            "id": 44,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/44/",
+                            "name": "National Aeronautics and Space Administration",
+                            "type": "Government"
+                        },
+                        {
+                            "id": 257,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/257/",
+                            "name": "Northrop Grumman Innovation Systems",
+                            "type": "Commercial"
+                        },
+                        {
+                            "id": 1020,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/1020/",
+                            "name": "Sierra Nevada Corporation",
+                            "type": "Commercial"
+                        },
+                        {
+                            "id": 121,
+                            "url": "https://lldev.thespacedevs.com/2.2.0/agencies/121/",
+                            "name": "SpaceX",
+                            "type": "Commercial"
+                        }
+                    ],
+                    "image_url": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/program_images/commercial2520_program_20201129212219.png",
+                    "start_date": "2008-12-23T00:00:00Z",
+                    "end_date": null,
+                    "info_url": null,
+                    "wiki_url": "https://en.wikipedia.org/wiki/Commercial_Resupply_Services#Commercial_Resupply_Services"
+                }
+            ]
+        }
+    ]
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<munit-tools:mock-when doc:name="Mock when" doc:id="5514638f-e87b-4d67-9060-a17da41a98bb" processor="http:request">
+					<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="fcb745b6-6da9-4882-a3e1-7af683000170" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+						<munit-tools:payload value="#[vars.mockedApiResponse]" mediaType="application/json" />
+					</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<flow-ref doc:name="Flow-ref to getUpcomingSpaceEvents" doc:id="04a13c6e-a3ae-4f83-ad8c-4b83ff6896b2" name="getUpcomingSpaceEvents" />
+				<ee:transform doc:name="Expected upcoming" doc:id="639bbd7c-24f3-4e65-a21c-7ec318270215">
+					<ee:message />
+					<ee:variables>
+						<ee:set-variable variableName="expectedResponse"><![CDATA[%dw 2.0
+output application/json
+---
+[
+    {
+        "id": 275,
+        "name": "CRS-23 Dragon Docking",
+        "date": "2021-08-19T00:00:00Z",
+        "location": "International Space Station",
+        "type": "Docking",
+        "description": "Following its launch atop a Falcon 9, the CRS-23 Dragon will autonomously dock to the ISS, bringing crew supplies as well as experiments.",
+        "url": "https://lldev.thespacedevs.com/2.2.0/event/275/",
+        "news_url": null,
+        "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+        "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/crs-23_dragon_d_image_20210519074125.jpeg"
+    },
+    {
+        "id": 276,
+        "name": "CRS-23 Dragon Undocking",
+        "date": "2021-09-12T00:00:00Z",
+        "location": "International Space Station",
+        "type": "Undocking",
+        "description": "The SpaceX CRS-23 Dragon spacecraft will undock from the International Space Station ahead of its reentry, splashdown and recovery.",
+        "url": "https://lldev.thespacedevs.com/2.2.0/event/276/",
+        "news_url": null,
+        "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+        "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/crs-23_dragon_u_image_20210519074227.jpeg"
+    }
+]]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-that doc:name="Assert that" doc:id="57c4c887-9f9e-45c7-ab60-76ff3038a940" expression="#[payload]" is="#[MunitTools::equalTo(vars.expectedResponse)]" />
+			</munit:validation>
+		</munit:test>
+	<munit:test name="getSpaceEventByNameTest-many-records" doc:id="7c5b327b-9908-4b00-89af-4d2b62b1108a" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="1f91746a-94cc-482c-a61b-0d6be51c386b" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="countMock" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	 "count": 3,
+	 "results": [
+    {
+      "name": "Apollo 11th 50th Anniversary - Lunar Landing",
+    },
+    {
+      "name": "Chandrayaan-2 Lunar Landing",
+    },
+    {
+      "name": "Chang'e 5 Lunar Landing",
+    }
+  ]
+}]]></ee:set-variable>
+					<ee:set-variable variableName="eventsMock" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "results": [
+    {
+      "name": "Apollo 11th 50th Anniversary - Lunar Landing",
+    },
+    {
+      "name": "Chandrayaan-2 Lunar Landing",
+    },
+    {
+      "name": "Chang'e 5 Lunar Landing",
+    }
+  ]
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="d39e0e4b-85af-4d78-8a5b-dd974b8d1644" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6d27a4ca-daca-4499-8f25-699cfd0f70c0" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.countMock]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="2271a11c-397f-49d1-a222-f0134528d965" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{name:"Lunar Landing"}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to getSpaceEventByName" doc:id="8cb47ff7-45a3-4240-a718-cbebe6e40e62" name="getSpaceEventByName"/>
+			<ee:transform doc:name="Transform Message" doc:id="11ce6a84-0452-496b-b75c-8b7b7a8e1535" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="expectedResponse" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "message": "We found too many records for your query, try one of the next!",
+    "variants": [
+        "Apollo 11th 50th Anniversary - Lunar Landing",
+        "Chandrayaan-2 Lunar Landing",
+        "Chang'e 5 Lunar Landing"
+    ]
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="ea40eb44-b6a4-4968-af30-3dd658652543" is="#[MunitTools::equalTo(vars.expectedResponse)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="getSpaceEventByNameTest-one-record" doc:id="87668a00-a5b2-4e99-bc8b-0702eac6f669" description="Test">
+			<munit:behavior>
+				<ee:transform doc:name="Transform Message" doc:id="93806bfd-bc9f-4ec0-b8a9-a5294ef33daa">
+					<ee:message />
+					<ee:variables>
+					<ee:set-variable variableName="apodMock" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "hdurl": "https://apod.nasa.gov/apod/image/1907/a11pan1040226lftsm.jpg",
+    "explanation": "Have you seen a panorama from another world lately? Assembled from high-resolution scans of the original film frames, this one sweeps across the magnificent desolation of the Apollo 11 landing site on the Moon's Sea of Tranquility. The images were taken by Neil Armstrong looking out his window of the Eagle Lunar Module fifty years ago, shortly after the July 20, 1969 landing. The frame at the far left (AS11-37-5449) is the first picture taken by a person on another world. Toward the south, thruster nozzles can be seen in the foreground on the left, while at the right, the shadow of the Eagle is visible to the west. For scale, the large, shallow crater on the right has a diameter of about 12 meters. Frames taken from the Lunar Module windows about an hour and a half after landing, before walking on the lunar surface, were intended to initially document the landing site in case an early departure was necessary."
+}]]></ee:set-variable>
+					<ee:set-variable variableName="eventMock" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "count": 1,
+  "results": [
+    {
+      "id": 25,
+      "url": "https://lldev.thespacedevs.com/2.2.0/event/25/",
+      "slug": "apollo-11th-50th-anniversary-lunar-landing-25",
+      "name": "Apollo 11th 50th Anniversary - Lunar Landing",
+      "type": {
+        "id": 7,
+        "name": "Moon Landing"
+      },
+      "description": "The United States' Apollo 11 was the first crewed mission to land on the Moon, on 20 July 1969. To date, the United States is the only country to have successfully conducted crewed missions to the Moon, with the last departing the lunar surface in December 1972.\r\n\r\nA total of twelve men have landed on the Moon. This was accomplished with two US pilot-astronauts flying a Lunar Module on each of six NASA missions across a 41-month period starting 20 July 1969 UTC, with Neil Armstrong and Buzz Aldrin on Apollo 11, and ending on 14 December 1972 UTC with Gene Cernan and Jack Schmitt on Apollo 17. Cernan was the last to step off the lunar surface.",
+      "location": "Lunar Surface",
+      "news_url": "https://www.nasa.gov/feature/apollo-11-in-real-time-50-years-later/",
+      "video_url": "https://apolloinrealtime.org/11/",
+      "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/apollo252011th2520-2520lunar2520landing252050th2520anniversary_image_20190715211113.jpg",
+      "date": "2019-07-20T20:17:00Z"
+    }
+  ]
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<munit-tools:mock-when doc:name="Mock when" doc:id="db3ac12e-0b1e-486e-9337-73e2d298ff52" processor="http:request">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="6d27a4ca-daca-4499-8f25-699cfd0f70c0" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.eventMock]" mediaType="application/json" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="80f46c72-7a9a-4cdf-ba10-f3af78c96f20" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="56c704d3-6dcb-44d9-9faa-199aacf9f9a5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.apodMock]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<munit:set-event doc:name="Set Event" doc:id="f6350e7e-6fcb-4693-b5fd-b7e2e52ca03e" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{name:"Apollo 11th 50th Anniversary - Lunar Landing"}]' />
+				</munit:set-event>
+				<flow-ref doc:name="Flow-ref to getSpaceEventByName" doc:id="9d94579f-b94e-46d8-b1b0-91642bd06236" name="getSpaceEventByName" />
+				<ee:transform doc:name="Transform Message" doc:id="22b540cf-cab7-4532-8370-68e796efcaa8">
+					<ee:message />
+					<ee:variables>
+						<ee:set-variable variableName="expectedResponse"><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "id": 25,
+    "name": "Apollo 11th 50th Anniversary - Lunar Landing",
+    "date": "2019-07-20T20:17:00Z",
+    "picture_of_the_day": {
+        "hdurl": "https://apod.nasa.gov/apod/image/1907/a11pan1040226lftsm.jpg",
+        "explanation": "Have you seen a panorama from another world lately? Assembled from high-resolution scans of the original film frames, this one sweeps across the magnificent desolation of the Apollo 11 landing site on the Moon's Sea of Tranquility. The images were taken by Neil Armstrong looking out his window of the Eagle Lunar Module fifty years ago, shortly after the July 20, 1969 landing. The frame at the far left (AS11-37-5449) is the first picture taken by a person on another world. Toward the south, thruster nozzles can be seen in the foreground on the left, while at the right, the shadow of the Eagle is visible to the west. For scale, the large, shallow crater on the right has a diameter of about 12 meters. Frames taken from the Lunar Module windows about an hour and a half after landing, before walking on the lunar surface, were intended to initially document the landing site in case an early departure was necessary."
+    },
+    "location": "Lunar Surface",
+    "type": "Moon Landing",
+    "description": "The United States' Apollo 11 was the first crewed mission to land on the Moon, on 20 July 1969. To date, the United States is the only country to have successfully conducted crewed missions to the Moon, with the last departing the lunar surface in December 1972.\r\n\r\nA total of twelve men have landed on the Moon. This was accomplished with two US pilot-astronauts flying a Lunar Module on each of six NASA missions across a 41-month period starting 20 July 1969 UTC, with Neil Armstrong and Buzz Aldrin on Apollo 11, and ending on 14 December 1972 UTC with Gene Cernan and Jack Schmitt on Apollo 17. Cernan was the last to step off the lunar surface.",
+    "url": "https://lldev.thespacedevs.com/2.2.0/event/25/",
+    "news_url": "https://www.nasa.gov/feature/apollo-11-in-real-time-50-years-later/",
+    "video_url": "https://apolloinrealtime.org/11/",
+    "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/apollo252011th2520-2520lunar2520landing252050th2520anniversary_image_20190715211113.jpg"
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-that doc:name="Assert that" doc:id="3c2ada89-07e1-4f3c-93a1-af49a397ac94" expression="#[payload]" is="#[MunitTools::equalTo(vars.expectedResponse)]" />
+			</munit:validation>
+		</munit:test>
+</mule>

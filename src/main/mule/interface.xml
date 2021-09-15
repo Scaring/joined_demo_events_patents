@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
+    <flow name="space-events-demo-main">
+        <http:listener config-ref="space-events-demo-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="space-events-demo-config" />
+        <error-handler ref="errorHandling" />
+    </flow>
+    <flow name="space-events-demo-console">
+        <http:listener config-ref="space-events-demo-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="space-events-demo-config" />
+        <error-handler ref="errorHandling" />
+    </flow>
+    <flow name="get:\events:space-events-demo-config">
+        <flow-ref doc:name="getSpaceEvents" doc:id="743b33f3-f747-476b-b6d5-3cefb5fbda14" name="getSpaceEvents" targetValue="#[message]" />
+        <error-handler ref="errorHandling" />
+    </flow>
+    <flow name="get:\upcoming:space-events-demo-config">
+        <flow-ref doc:name="getUpcomingSpaceEvents" doc:id="1a54f678-a1a3-40fe-a791-c52ef96f9221" name="getUpcomingSpaceEvents" />
+        <error-handler ref="errorHandling" />
+    </flow>
+    <flow name="get:\event:space-events-demo-config">
+        <flow-ref doc:name="getSpaceEventByName" doc:id="cbc4ff51-7807-4102-b0ce-2ce1af5532fd" name="getSpaceEventByName" targetValue="#[message]" />
+        <error-handler ref="errorHandling" />
+    </flow>
+</mule>

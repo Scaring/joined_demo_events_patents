@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="new-test-suite.xml" />
+<munit:test name="APP:PERIOD_WRONG_FORMAT" doc:id="a2b5854a-55b5-42fb-866f-2777c3a8a427" description="Test">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="flow-ref getSpaceEvents" doc:id="9b06af48-fe61-49c9-be13-152fafce58f7" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="743b33f3-f747-476b-b6d5-3cefb5fbda14" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APP:PERIOD_WRONG_FORMAT" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="get:\events:space-events-demo-config" doc:id="dde4ee77-3252-4322-97a0-4046d42dfa4f" name="get:\events:space-events-demo-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="400" doc:id="c4430f62-a3c9-4686-8981-7be7f679f5d6" is='#[MunitTools::equalTo("400")]' expression="#[vars.httpStatus]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="APP:EVENTS_NOT_FOUND" doc:id="c300a996-036a-408f-9b31-f4c43c85ea17" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="flow-ref getSpaceEventByName" doc:id="782ad727-167a-4bfa-b470-5fedcfb296ba" processor="flow-ref" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="cbc4ff51-7807-4102-b0ce-2ce1af5532fd" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APP:EVENTS_NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="get:\event:space-events-demo-config" doc:id="e5414197-81a5-4092-8955-92da0694db58" name="get:\event:space-events-demo-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="404" doc:id="1db7806a-db4f-46b1-9c17-10b610964a23" is='#[MunitTools::equalTo("404")]' expression="#[vars.httpStatus]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="APIKIT:BAD_REQUEST" doc:id="253007ca-25c8-45cb-ac9f-ac838bda2f3d" description="Test">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="apikit:router" doc:id="866b9690-b5eb-470e-a2d1-450d232e57dc" processor="apikit:router">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="space-events-demo-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<flow-ref doc:name="space-events-demo-main" doc:id="1c41dc3d-fedb-4dc6-a92d-12aad4a79764" name="space-events-demo-main" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="400" doc:id="2a6a992a-41cb-4642-9af6-260e9cddb3bb" is='#[MunitTools::equalTo("400")]' expression="#[vars.httpStatus]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="APIKIT:NOT_FOUND" doc:id="760b2a50-d034-4a44-8366-ddc050cf8aa8" expectedErrorType="APIKIT:NOT_FOUND">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="apikit:router" doc:id="2f54bf72-77d3-4ade-a228-cf7113afda3f" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="space-events-demo-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="space-events-demo-main" doc:id="f902cb99-8f1e-41ad-8ec6-00ff9d719a27" name="space-events-demo-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="404" doc:id="230b6bd9-15f9-4f6a-ad44-94f13bacff8d" is='#[MunitTools::equalTo("404")]' expression="#[vars.httpStatus]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="APIKIT:METHOD_NOT_ALLOWED" doc:id="609d2b5e-46e1-459a-b27c-ffe95e140e47" expectedErrorType="APIKIT:METHOD_NOT_ALLOWED">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="apikit:router" doc:id="a6c1638e-7e19-4bb8-aea0-573f7aeabb15" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="space-events-demo-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="space-events-demo-main" doc:id="5d4a2fa1-933a-43b4-b847-828c89de6889" name="space-events-demo-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="405" doc:id="30dc1ce8-ea48-4340-90fe-5f43641063c8" is='#[MunitTools::equalTo("405")]' expression="#[vars.httpStatus]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="APIKIT:NOT_ACCEPTABLE" doc:id="2560c64d-bc10-401e-b9a0-19db69fd8d1d" expectedErrorType="APIKIT:NOT_ACCEPTABLE">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="apikit:router" doc:id="875ffd17-4bd4-4444-b6a9-a4f1ae24c135" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="space-events-demo-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="space-events-demo-main" doc:id="e724b862-8543-4b04-ad80-58e4be72ac88" name="space-events-demo-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="406" doc:id="8742aa37-3687-42e9-b36e-bf31e80c0a23" is='#[MunitTools::equalTo("406")]' expression="#[vars.httpStatus]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="APIKIT:UNSUPPORTED_MEDIA_TYPE" doc:id="5fd21e22-8fe0-4d3e-ace4-872772d594d4" expectedErrorType="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="apikit:router" doc:id="4a0f4fce-0d8f-4006-b6bb-6dd147b6823d" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="space-events-demo-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="space-events-demo-main" doc:id="6cea6f46-2d1c-4694-bbc3-764f13a2daea" name="space-events-demo-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="415" doc:id="9f5ae751-0d76-43c9-a0a7-aff64b8b63f8" is='#[MunitTools::equalTo("415")]' expression="#[vars.httpStatus]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="APIKIT:NOT_IMPLEMENTED" doc:id="b1cc431a-91e9-47c4-a1ac-3a25f964bb21" expectedErrorType="APIKIT:NOT_IMPLEMENTED">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="apikit:router" doc:id="e438d421-8028-4518-8f01-bb0a4fa1f3e3" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="space-events-demo-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="space-events-demo-main" doc:id="a711e693-3595-41fc-8ffd-227319447fbc" name="space-events-demo-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="501" doc:id="b0a133f2-9d9d-4530-a631-0df6451c6816" is='#[MunitTools::equalTo("501")]' expression="#[vars.httpStatus]"/>
+		</munit:validation>
+	</munit:test>
+
+</mule>
