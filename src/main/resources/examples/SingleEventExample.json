@@ -1,0 +1,17 @@
+{
+    "id": 60,
+    "name": "70th International Astronautical Congress",
+    "date": "2019-10-25T21:00:00Z",
+    "picture_of_the_day": 
+        {
+        "hdurl": "https://apod.nasa.gov/apod/image/2001/NacreousPMHeden.jpg",
+        "explanation": "Vivid and lustrous, wafting iridescent waves of color filled this mountain and skyscape near Tanndalen"
+        },
+    "location": "Washington D.C, United States",
+    "type": "Press Event",
+    "description": "The International Astronautical Congress is a yearly conference where key figures in the space industry meet and showcase/discuss events in the spaceflight industry.\r\n\r\nThe event lasts starts on 21st October and lasts a week. Some of the panels will be live streamed for free on NASA TV.",
+    "url": "https://ll.thespacedevs.com/2.2.0/event/60/",
+    "news_url": "https://www.iac2019.org/",
+    "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+    "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/70th2520international2520astronautical2520congress_image_20191019002059.png"
+}
