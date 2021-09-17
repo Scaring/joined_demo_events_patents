@@ -120,17 +120,19 @@ output application/json
 				<set-variable value="#[payload]" doc:name="objectEventByName" doc:id="3f3a4a0f-cc20-46cd-97d7-89747dbaf574" variableName="eventByName" />
 				<set-variable value="#[vars.eventByName.date[0 to 9]]" doc:name="date" doc:id="2a8d7154-1370-4eb1-9987-9f50886854a5" variableName="date" />
 				<logger level="INFO" doc:name="date" doc:id="49b91176-26d6-4ea3-89b6-5de27e531baa" message='#["date: " ++ vars.date as String]' />
-				<http:request method="GET" doc:name="nasa-apod" doc:id="56c704d3-6dcb-44d9-9faa-199aacf9f9a5" config-ref="HTTP_Request_config_nasa" path="/apod" >
-					<http:query-params ><![CDATA[#[output application/java
+				<choice doc:name="Choice" doc:id="50c9f738-7b57-4451-82e6-8d8fc1c8975c" >
+					<when expression='#[vars.date as Date{format:"yyyy-MM-dd"} &lt; now() as Date{format:"yyyy-MM-dd"} and vars.date as Date{format:"yyyy-MM-dd"} &gt; "1995-06-16" as Date{format:"yyyy-MM-dd"}]'>
+						<http:request method="GET" doc:name="nasa-apod" doc:id="56c704d3-6dcb-44d9-9faa-199aacf9f9a5" config-ref="HTTP_Request_config_nasa" path="/apod">
+					<http:query-params><![CDATA[#[output application/java
 ---
 {
 	"date" : vars.date,
 	"api_key" : Mule::p('nasa.api_key')
 }]]]></http:query-params>
 				</http:request>
-				<ee:transform doc:name="add-nasa-data-to-event" doc:id="1b3fb980-9912-42ee-b681-98954a683c62" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+						<ee:transform doc:name="add-nasa-data-to-event" doc:id="1b3fb980-9912-42ee-b681-98954a683c62">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
@@ -151,6 +153,27 @@ output application/json
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
+					</when>
+					<otherwise >
+						<ee:transform doc:name="event" doc:id="a022c8ae-ee9b-4119-b934-12c872181820" >
+							<ee:message >
+								<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	id: vars.eventByName.id,
+	name: vars.eventByName.name,
+	date: vars.eventByName.date,
+	location: vars.eventByName.location,
+	"type": vars.eventByName."type",
+	description: vars.eventByName.description,
+	url: vars.eventByName.url,
+	feature_image: vars.eventByName.feature_image
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+					</otherwise>
+				</choice>
 			</otherwise>
 		</choice>
 	</sub-flow>
