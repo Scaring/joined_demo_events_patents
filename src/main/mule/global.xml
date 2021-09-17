@@ -20,5 +20,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<http:request-config name="slack_request" doc:name="HTTP Request configuration" doc:id="50b9586b-0c14-48d0-a939-2b0e867e0f45" basePath="${deployed.path}" >
 		<http:request-connection host="${deployed.host}" />
 	</http:request-config>	
-
+	<http:request-config name="HTTP_Request_configuration_Patents" doc:name="HTTP Request configuration" doc:id="da711e40-08aa-4204-a93e-6edc4995bc85" >
+	 	<http:request-connection host="${patents.host}" protocol="${patents.protocol}" />
+	</http:request-config>	
 </mule>

@@ -1245,4 +1245,523 @@ output application/json
 				<munit-tools:assert-that doc:name="Assert that" doc:id="3c2ada89-07e1-4f3c-93a1-af49a397ac94" expression="#[payload]" is="#[MunitTools::equalTo(vars.expectedResponse)]" />
 			</munit:validation>
 		</munit:test>
-</mule>
+		<munit:test name="getUniversalTest" doc:id="b563a15d-b9ef-4b42-bec0-5d0ad474c477" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Set Mocking Data" doc:id="94a5d7a0-fd5d-4744-b3e7-d5be63915195" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="inputFromNASA" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+"results": [
+	        [
+            "59a13eea9600025c7e6c09d4",
+            "ARC-17386-1",
+            "Comprehensive oculomotor behavioral response assessment (COBRA)",
+            "An eye movement-based methodology and assessment tool may be used to     quantify many aspects of human dynamic visual processing using a     relatively simple and short oculomotor task, noninvasive video-based eye     tracking, and validated oculometric analysis techniques. By examining the     eye movement responses to a task including a radially-organized     appropriately randomized sequence of Rashbass-like step-ramp     pursuit-tracking trials, distinct performance measurements may be     generated that may be associated with, for example, pursuit initiation     (e.g., latency and open-loop pursuit acceleration), steady-state tracking     (e.g., gain, catch-up saccade amplitude, and the proportion of the     steady-state response consisting of smooth movement), direction tuning     (e.g., oblique effect amplitude, horizontal-vertical asymmetry, and     direction noise), and speed tuning (e.g., speed responsiveness and     noise). This quantitative approach may provide fast and results (e.g., a     multi-dimensional set of oculometrics and a single scalar impairment     index) that can be interpreted by one without a high degree of scientific     sophistication or extensive training.",
+            "ARC-17386-1",
+            "health medicine and biotechnology",
+            "",
+            "",
+            "",
+            "ARC",
+            "",
+            ""
+        ],
+        [
+            "5992be40960002c32bda7d0f",
+            "ARC-17386-2",
+            "Comprehensive Oculomotor Behavioral Response Assessment (COBRA)",
+            "Dynamic visual processing remains difficult to assess clinically, due at least in part to the lack of a readily-available assessment tool and a codified set of performance standards.  Severe impairments in dynamic visual function can stem from a large number of causes, including: stroke, traumatic brain injury, autism, Alzheimers disease, schizophrenia, degenerative retinal disease, drug toxicity, aging, and spaceflight-induced visual impairment.  To assess various aspects of dynamic visual function including peripheral attention, peripheral spatial localization, perceptual motion processing, and oculomotor responsiveness, we developed a simple fifteen-minute clinical test that measures and computes ten eye-movement-based, i.e., oculometric, measures.  Our oculometric tool may be useful to clinicians to localize affected brain regions following trauma, degenerative disease, or aging, to characterize and quantify clinical deficits, to monitor recovery of function after injury, and to detect altered or impaired visual performance at sub-clinical levels.  This sensitive assessment tool has immediate applicability as a screening tool by comparing the oculometric measures of an individual to a normal baseline population, or from the same individual before and after exposure to a potentially-traumatic event (e.g., a boxing match, football game, combat tour, space mission), or on an ongoing basis to monitor performance as it returns to baseline following injury.  Applications of our oculometric tool include screening: patients for deficits in visual function; pilot candidates based upon inherent dynamic visual capabilities; patients, players, or soldiers for recovery by periodic reassessment following injury;  automobile drivers as they age; and astronaut visual status before and after a mission.",
+            "ARC-17386-2",
+            "health medicine and biotechnology",
+            "",
+            "",
+            "",
+            "ARC",
+            "",
+            ""
+        ],
+        [
+            "57a06e5b960002877a676459",
+            "NPO-49553-3",
+            "Biblade sampler",
+            "A BiBlade sampler may include a first blade and a second blade in a     retracted position. The BiBlade sampler may also include a gripper, which     is driven by an actuator. The gripper may include a plurality of fingers     to force the first blade and the second blade to remain in a retracted     position. When the fingers are unhooked, the first blade and the second     blade penetrate a surface of an object.",
+            "NPO-49553-3",
+            "instrumentation",
+            "",
+            "",
+            "",
+            "JPL",
+            "",
+            ""
+        ]
+]
+
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="1b05b114-d3ae-4904-9ebc-d7c7eac3278e" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Get Data from NASA api" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="6644905b-72be-455d-a326-0f18e6989633" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.inputFromNASA]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to getUniversal" doc:id="6acbc677-8f1a-45d0-8b8c-6bab6d641dac" name="get:\patents:space-events-demo-config"/>
+			<ee:transform doc:name="Set expected result" doc:id="8ea0b1c2-5b8e-44a4-96b1-1bd55600feee">
+				<ee:message>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="expected" ><![CDATA[%dw 2.0
+output application/json
+---
+[
+	{
+        "category": "health medicine and biotechnology",
+        "name": "ARC-17386-1",
+        "patentName": "Comprehensive oculomotor behavioral response assessment (COBRA)",
+        "Description": "An eye movement-based methodology and assessment tool may be used to     quantify many aspects of human dynamic visual processing using a     relatively simple and short oculomotor task, noninvasive video-based eye     tracking, and validated oculometric analysis techniques. By examining the     eye movement responses to a task including a radially-organized     appropriately randomized sequence of Rashbass-like step-ramp     pursuit-tracking trials, distinct performance measurements may be     generated that may be associated with, for example, pursuit initiation     (e.g., latency and open-loop pursuit acceleration), steady-state tracking     (e.g., gain, catch-up saccade amplitude, and the proportion of the     steady-state response consisting of smooth movement), direction tuning     (e.g., oblique effect amplitude, horizontal-vertical asymmetry, and     direction noise), and speed tuning (e.g., speed responsiveness and     noise). This quantitative approach may provide fast and results (e.g., a     multi-dimensional set of oculometrics and a single scalar impairment     index) that can be interpreted by one without a high degree of scientific     sophistication or extensive training.",
+        "researchCenter": "ARC"
+    },
+    {
+        "category": "health medicine and biotechnology",
+        "name": "ARC-17386-2",
+        "patentName": "Comprehensive Oculomotor Behavioral Response Assessment (COBRA)",
+        "Description": "Dynamic visual processing remains difficult to assess clinically, due at least in part to the lack of a readily-available assessment tool and a codified set of performance standards.  Severe impairments in dynamic visual function can stem from a large number of causes, including: stroke, traumatic brain injury, autism, Alzheimers disease, schizophrenia, degenerative retinal disease, drug toxicity, aging, and spaceflight-induced visual impairment.  To assess various aspects of dynamic visual function including peripheral attention, peripheral spatial localization, perceptual motion processing, and oculomotor responsiveness, we developed a simple fifteen-minute clinical test that measures and computes ten eye-movement-based, i.e., oculometric, measures.  Our oculometric tool may be useful to clinicians to localize affected brain regions following trauma, degenerative disease, or aging, to characterize and quantify clinical deficits, to monitor recovery of function after injury, and to detect altered or impaired visual performance at sub-clinical levels.  This sensitive assessment tool has immediate applicability as a screening tool by comparing the oculometric measures of an individual to a normal baseline population, or from the same individual before and after exposure to a potentially-traumatic event (e.g., a boxing match, football game, combat tour, space mission), or on an ongoing basis to monitor performance as it returns to baseline following injury.  Applications of our oculometric tool include screening: patients for deficits in visual function; pilot candidates based upon inherent dynamic visual capabilities; patients, players, or soldiers for recovery by periodic reassessment following injury;  automobile drivers as they age; and astronaut visual status before and after a mission.",
+        "researchCenter": "ARC"
+    },
+    {
+        "category": "instrumentation",
+        "name": "NPO-49553-3",
+        "patentName": "Biblade sampler",
+        "Description": "A BiBlade sampler may include a first blade and a second blade in a     retracted position. The BiBlade sampler may also include a gripper, which     is driven by an actuator. The gripper may include a plurality of fingers     to force the first blade and the second blade to remain in a retracted     position. When the fingers are unhooked, the first blade and the second     blade penetrate a surface of an object.",
+        "researchCenter": "JPL"
+    }
+]]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="52af5014-8a58-4b72-8fef-dc970ad38d55" expression="#[payload]" is="#[MunitTools::equalTo(vars.expected)]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="getUniversalTest_enumIsValid" doc:id="f0045486-d473-4d6b-8728-5a5b566d491d" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Set Mocking data" doc:id="e5895865-d2f8-4f63-b0f9-3874a43b478c" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="inputFromNASA" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+"results": [
+	        [
+            "59a13eea9600025c7e6c09d4",
+            "ARC-17386-1",
+            "Comprehensive oculomotor behavioral response assessment (COBRA)",
+            "An eye movement-based methodology and assessment tool may be used to     quantify many aspects of human dynamic visual processing using a     relatively simple and short oculomotor task, noninvasive video-based eye     tracking, and validated oculometric analysis techniques. By examining the     eye movement responses to a task including a radially-organized     appropriately randomized sequence of Rashbass-like step-ramp     pursuit-tracking trials, distinct performance measurements may be     generated that may be associated with, for example, pursuit initiation     (e.g., latency and open-loop pursuit acceleration), steady-state tracking     (e.g., gain, catch-up saccade amplitude, and the proportion of the     steady-state response consisting of smooth movement), direction tuning     (e.g., oblique effect amplitude, horizontal-vertical asymmetry, and     direction noise), and speed tuning (e.g., speed responsiveness and     noise). This quantitative approach may provide fast and results (e.g., a     multi-dimensional set of oculometrics and a single scalar impairment     index) that can be interpreted by one without a high degree of scientific     sophistication or extensive training.",
+            "ARC-17386-1",
+            "health medicine and biotechnology",
+            "",
+            "",
+            "",
+            "ARC",
+            "",
+            ""
+        ],
+        [
+            "5992be40960002c32bda7d0f",
+            "ARC-17386-2",
+            "Comprehensive Oculomotor Behavioral Response Assessment (COBRA)",
+            "Dynamic visual processing remains difficult to assess clinically, due at least in part to the lack of a readily-available assessment tool and a codified set of performance standards.  Severe impairments in dynamic visual function can stem from a large number of causes, including: stroke, traumatic brain injury, autism, Alzheimers disease, schizophrenia, degenerative retinal disease, drug toxicity, aging, and spaceflight-induced visual impairment.  To assess various aspects of dynamic visual function including peripheral attention, peripheral spatial localization, perceptual motion processing, and oculomotor responsiveness, we developed a simple fifteen-minute clinical test that measures and computes ten eye-movement-based, i.e., oculometric, measures.  Our oculometric tool may be useful to clinicians to localize affected brain regions following trauma, degenerative disease, or aging, to characterize and quantify clinical deficits, to monitor recovery of function after injury, and to detect altered or impaired visual performance at sub-clinical levels.  This sensitive assessment tool has immediate applicability as a screening tool by comparing the oculometric measures of an individual to a normal baseline population, or from the same individual before and after exposure to a potentially-traumatic event (e.g., a boxing match, football game, combat tour, space mission), or on an ongoing basis to monitor performance as it returns to baseline following injury.  Applications of our oculometric tool include screening: patients for deficits in visual function; pilot candidates based upon inherent dynamic visual capabilities; patients, players, or soldiers for recovery by periodic reassessment following injury;  automobile drivers as they age; and astronaut visual status before and after a mission.",
+            "ARC-17386-2",
+            "health medicine and biotechnology",
+            "",
+            "",
+            "",
+            "ARC",
+            "",
+            ""
+        ],
+        [
+            "57a06e5b960002877a676459",
+            "NPO-49553-3",
+            "Biblade sampler",
+            "A BiBlade sampler may include a first blade and a second blade in a     retracted position. The BiBlade sampler may also include a gripper, which     is driven by an actuator. The gripper may include a plurality of fingers     to force the first blade and the second blade to remain in a retracted     position. When the fingers are unhooked, the first blade and the second     blade penetrate a surface of an object.",
+            "NPO-49553-3",
+            "instrumentation",
+            "",
+            "",
+            "",
+            "JPL",
+            "",
+            ""
+        ]
+]
+
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="e1045685-8add-40ae-81a7-fbe0ab379cd4" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6644905b-72be-455d-a326-0f18e6989633" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.inputFromNASA]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<ee:transform doc:name="Set queryParams" doc:id="fad2c2b6-dd2d-4c57-9347-d0fc4ba714a0">
+				<ee:message>
+					<ee:set-attributes><![CDATA[%dw 2.0
+output application/json
+---
+{
+	queryParams: {
+		research: "ARC"
+	}
+}]]></ee:set-attributes>
+				</ee:message>
+				<ee:variables />
+			</ee:transform>
+			<flow-ref doc:name="Flow-ref to getUniversal" doc:id="53e5adc8-4e7d-4de2-8bf7-f0e268d26c50" name="get:\patents:space-events-demo-config" />
+			<ee:transform doc:name="Set Expected Result" doc:id="fabe1f43-c9ab-4001-a389-5c9f5c4f2b6f" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="expected" ><![CDATA[%dw 2.0
+output application/json
+---
+[
+	{
+        "category": "health medicine and biotechnology",
+        "name": "ARC-17386-1",
+        "patentName": "Comprehensive oculomotor behavioral response assessment (COBRA)",
+        "Description": "An eye movement-based methodology and assessment tool may be used to     quantify many aspects of human dynamic visual processing using a     relatively simple and short oculomotor task, noninvasive video-based eye     tracking, and validated oculometric analysis techniques. By examining the     eye movement responses to a task including a radially-organized     appropriately randomized sequence of Rashbass-like step-ramp     pursuit-tracking trials, distinct performance measurements may be     generated that may be associated with, for example, pursuit initiation     (e.g., latency and open-loop pursuit acceleration), steady-state tracking     (e.g., gain, catch-up saccade amplitude, and the proportion of the     steady-state response consisting of smooth movement), direction tuning     (e.g., oblique effect amplitude, horizontal-vertical asymmetry, and     direction noise), and speed tuning (e.g., speed responsiveness and     noise). This quantitative approach may provide fast and results (e.g., a     multi-dimensional set of oculometrics and a single scalar impairment     index) that can be interpreted by one without a high degree of scientific     sophistication or extensive training.",
+        "researchCenter": "ARC"
+    },
+    {
+        "category": "health medicine and biotechnology",
+        "name": "ARC-17386-2",
+        "patentName": "Comprehensive Oculomotor Behavioral Response Assessment (COBRA)",
+        "Description": "Dynamic visual processing remains difficult to assess clinically, due at least in part to the lack of a readily-available assessment tool and a codified set of performance standards.  Severe impairments in dynamic visual function can stem from a large number of causes, including: stroke, traumatic brain injury, autism, Alzheimers disease, schizophrenia, degenerative retinal disease, drug toxicity, aging, and spaceflight-induced visual impairment.  To assess various aspects of dynamic visual function including peripheral attention, peripheral spatial localization, perceptual motion processing, and oculomotor responsiveness, we developed a simple fifteen-minute clinical test that measures and computes ten eye-movement-based, i.e., oculometric, measures.  Our oculometric tool may be useful to clinicians to localize affected brain regions following trauma, degenerative disease, or aging, to characterize and quantify clinical deficits, to monitor recovery of function after injury, and to detect altered or impaired visual performance at sub-clinical levels.  This sensitive assessment tool has immediate applicability as a screening tool by comparing the oculometric measures of an individual to a normal baseline population, or from the same individual before and after exposure to a potentially-traumatic event (e.g., a boxing match, football game, combat tour, space mission), or on an ongoing basis to monitor performance as it returns to baseline following injury.  Applications of our oculometric tool include screening: patients for deficits in visual function; pilot candidates based upon inherent dynamic visual capabilities; patients, players, or soldiers for recovery by periodic reassessment following injury;  automobile drivers as they age; and astronaut visual status before and after a mission.",
+        "researchCenter": "ARC"
+    }
+]]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="f4cb1036-d7b9-4c95-8c63-0392015d2855" expression="#[payload]" is="#[MunitTools::equalTo(vars.expected)]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="getUniversalTest_categoryValid" doc:id="e6d8e148-49ee-4baa-8d6f-777751adef94" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Set Mocking data" doc:id="f5b0fc16-a6b5-4058-824e-2ece330f0fde" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="inputFromNASA" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+"results": [
+	        [
+            "59a13eea9600025c7e6c09d4",
+            "ARC-17386-1",
+            "Comprehensive oculomotor behavioral response assessment (COBRA)",
+            "An eye movement-based methodology and assessment tool may be used to     quantify many aspects of human dynamic visual processing using a     relatively simple and short oculomotor task, noninvasive video-based eye     tracking, and validated oculometric analysis techniques. By examining the     eye movement responses to a task including a radially-organized     appropriately randomized sequence of Rashbass-like step-ramp     pursuit-tracking trials, distinct performance measurements may be     generated that may be associated with, for example, pursuit initiation     (e.g., latency and open-loop pursuit acceleration), steady-state tracking     (e.g., gain, catch-up saccade amplitude, and the proportion of the     steady-state response consisting of smooth movement), direction tuning     (e.g., oblique effect amplitude, horizontal-vertical asymmetry, and     direction noise), and speed tuning (e.g., speed responsiveness and     noise). This quantitative approach may provide fast and results (e.g., a     multi-dimensional set of oculometrics and a single scalar impairment     index) that can be interpreted by one without a high degree of scientific     sophistication or extensive training.",
+            "ARC-17386-1",
+            "health medicine and biotechnology",
+            "",
+            "",
+            "",
+            "ARC",
+            "",
+            ""
+        ],
+        [
+            "5992be40960002c32bda7d0f",
+            "ARC-17386-2",
+            "Comprehensive Oculomotor Behavioral Response Assessment (COBRA)",
+            "Dynamic visual processing remains difficult to assess clinically, due at least in part to the lack of a readily-available assessment tool and a codified set of performance standards.  Severe impairments in dynamic visual function can stem from a large number of causes, including: stroke, traumatic brain injury, autism, Alzheimers disease, schizophrenia, degenerative retinal disease, drug toxicity, aging, and spaceflight-induced visual impairment.  To assess various aspects of dynamic visual function including peripheral attention, peripheral spatial localization, perceptual motion processing, and oculomotor responsiveness, we developed a simple fifteen-minute clinical test that measures and computes ten eye-movement-based, i.e., oculometric, measures.  Our oculometric tool may be useful to clinicians to localize affected brain regions following trauma, degenerative disease, or aging, to characterize and quantify clinical deficits, to monitor recovery of function after injury, and to detect altered or impaired visual performance at sub-clinical levels.  This sensitive assessment tool has immediate applicability as a screening tool by comparing the oculometric measures of an individual to a normal baseline population, or from the same individual before and after exposure to a potentially-traumatic event (e.g., a boxing match, football game, combat tour, space mission), or on an ongoing basis to monitor performance as it returns to baseline following injury.  Applications of our oculometric tool include screening: patients for deficits in visual function; pilot candidates based upon inherent dynamic visual capabilities; patients, players, or soldiers for recovery by periodic reassessment following injury;  automobile drivers as they age; and astronaut visual status before and after a mission.",
+            "ARC-17386-2",
+            "health medicine and biotechnology",
+            "",
+            "",
+            "",
+            "ARC",
+            "",
+            ""
+        ],
+        [
+            "57a06e5b960002877a676459",
+            "NPO-49553-3",
+            "Biblade sampler",
+            "A BiBlade sampler may include a first blade and a second blade in a     retracted position. The BiBlade sampler may also include a gripper, which     is driven by an actuator. The gripper may include a plurality of fingers     to force the first blade and the second blade to remain in a retracted     position. When the fingers are unhooked, the first blade and the second     blade penetrate a surface of an object.",
+            "NPO-49553-3",
+            "instrumentation",
+            "",
+            "",
+            "",
+            "JPL",
+            "",
+            ""
+        ]
+]
+
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="ef36a64a-c604-48d2-a6cb-39c536de6eaf" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6644905b-72be-455d-a326-0f18e6989633" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.inputFromNASA]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<ee:transform doc:name="Set queryParams" doc:id="1f6fc90c-55ca-483a-ab89-51f82ad02278">
+				<ee:message>
+					<ee:set-attributes><![CDATA[%dw 2.0
+output application/json
+---
+{
+	queryParams: {
+		category: "instrumentation"
+	}
+}]]></ee:set-attributes>
+				</ee:message>
+				<ee:variables />
+			</ee:transform>
+			<flow-ref doc:name="Flow-ref to getUniversal" doc:id="d784521e-6cce-4800-b5a5-8f1c70de6bde" name="get:\patents:space-events-demo-config" />
+			<ee:transform doc:name="Set Expected Result" doc:id="c16ca9c9-4d7b-416f-8125-d0aaa96a42b5" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="expected" ><![CDATA[%dw 2.0
+output application/json
+---
+[{
+        "category": "instrumentation",
+        "name": "NPO-49553-3",
+        "patentName": "Biblade sampler",
+        "Description": "A BiBlade sampler may include a first blade and a second blade in a     retracted position. The BiBlade sampler may also include a gripper, which     is driven by an actuator. The gripper may include a plurality of fingers     to force the first blade and the second blade to remain in a retracted     position. When the fingers are unhooked, the first blade and the second     blade penetrate a surface of an object.",
+        "researchCenter": "JPL"
+}]]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="9d096053-e62e-45ab-b509-32ac5683b2a8" expression="#[payload]" is="#[MunitTools::equalTo(vars.expected)]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="getUniversalTest_categoryUnvalid" doc:id="a59fcea0-6f78-420b-aea5-abe1f82501c9" description="Test">
+			<munit:behavior>
+				<ee:transform doc:name="Set Mocking data" doc:id="8105fd07-4961-4868-b884-c8f63a667b97">
+					<ee:message />
+					<ee:variables>
+						<ee:set-variable variableName="inputFromNASA"><![CDATA[%dw 2.0
+output application/json
+---
+{
+"results": [
+	        [
+            "59a13eea9600025c7e6c09d4",
+            "ARC-17386-1",
+            "Comprehensive oculomotor behavioral response assessment (COBRA)",
+            "An eye movement-based methodology and assessment tool may be used to     quantify many aspects of human dynamic visual processing using a     relatively simple and short oculomotor task, noninvasive video-based eye     tracking, and validated oculometric analysis techniques. By examining the     eye movement responses to a task including a radially-organized     appropriately randomized sequence of Rashbass-like step-ramp     pursuit-tracking trials, distinct performance measurements may be     generated that may be associated with, for example, pursuit initiation     (e.g., latency and open-loop pursuit acceleration), steady-state tracking     (e.g., gain, catch-up saccade amplitude, and the proportion of the     steady-state response consisting of smooth movement), direction tuning     (e.g., oblique effect amplitude, horizontal-vertical asymmetry, and     direction noise), and speed tuning (e.g., speed responsiveness and     noise). This quantitative approach may provide fast and results (e.g., a     multi-dimensional set of oculometrics and a single scalar impairment     index) that can be interpreted by one without a high degree of scientific     sophistication or extensive training.",
+            "ARC-17386-1",
+            "health medicine and biotechnology",
+            "",
+            "",
+            "",
+            "ARC",
+            "",
+            ""
+        ],
+        [
+            "5992be40960002c32bda7d0f",
+            "ARC-17386-2",
+            "Comprehensive Oculomotor Behavioral Response Assessment (COBRA)",
+            "Dynamic visual processing remains difficult to assess clinically, due at least in part to the lack of a readily-available assessment tool and a codified set of performance standards.  Severe impairments in dynamic visual function can stem from a large number of causes, including: stroke, traumatic brain injury, autism, Alzheimers disease, schizophrenia, degenerative retinal disease, drug toxicity, aging, and spaceflight-induced visual impairment.  To assess various aspects of dynamic visual function including peripheral attention, peripheral spatial localization, perceptual motion processing, and oculomotor responsiveness, we developed a simple fifteen-minute clinical test that measures and computes ten eye-movement-based, i.e., oculometric, measures.  Our oculometric tool may be useful to clinicians to localize affected brain regions following trauma, degenerative disease, or aging, to characterize and quantify clinical deficits, to monitor recovery of function after injury, and to detect altered or impaired visual performance at sub-clinical levels.  This sensitive assessment tool has immediate applicability as a screening tool by comparing the oculometric measures of an individual to a normal baseline population, or from the same individual before and after exposure to a potentially-traumatic event (e.g., a boxing match, football game, combat tour, space mission), or on an ongoing basis to monitor performance as it returns to baseline following injury.  Applications of our oculometric tool include screening: patients for deficits in visual function; pilot candidates based upon inherent dynamic visual capabilities; patients, players, or soldiers for recovery by periodic reassessment following injury;  automobile drivers as they age; and astronaut visual status before and after a mission.",
+            "ARC-17386-2",
+            "health medicine and biotechnology",
+            "",
+            "",
+            "",
+            "ARC",
+            "",
+            ""
+        ],
+        [
+            "57a06e5b960002877a676459",
+            "NPO-49553-3",
+            "Biblade sampler",
+            "A BiBlade sampler may include a first blade and a second blade in a     retracted position. The BiBlade sampler may also include a gripper, which     is driven by an actuator. The gripper may include a plurality of fingers     to force the first blade and the second blade to remain in a retracted     position. When the fingers are unhooked, the first blade and the second     blade penetrate a surface of an object.",
+            "NPO-49553-3",
+            "instrumentation",
+            "",
+            "",
+            "",
+            "JPL",
+            "",
+            ""
+        ]
+]
+
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<munit-tools:mock-when doc:name="Mock when" doc:id="5d829cdc-44db-4b01-bf7a-e58bb1f17e1d" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Get Data from NASA api" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="6644905b-72be-455d-a326-0f18e6989633" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+						<munit-tools:payload value="#[vars.inputFromNASA]" mediaType="application/json" />
+					</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<ee:transform doc:name="Set queryParams" doc:id="8aa6c935-a412-48a0-9457-7cea3d6b4fb3">
+					<ee:message>
+						<ee:set-attributes><![CDATA[%dw 2.0
+output application/json
+---
+{
+	queryParams: {
+		category: "undefined"
+	}
+}]]></ee:set-attributes>
+					</ee:message>
+					<ee:variables />
+				</ee:transform>
+				<flow-ref doc:name="Flow-ref to getUniversal" doc:id="e7d7b4c7-3a43-46da-9f26-dbce6e404f6f" name="get:\patents:space-events-demo-config" />
+			<ee:transform doc:name="Set Expected Result" doc:id="634332f6-bfbb-4eff-bbe0-0069b2806883">
+					<ee:message />
+					<ee:variables>
+						<ee:set-variable variableName="expected"><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "No elements found",
+	category: "undefined",
+	research: ""
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-that doc:name="Assert that" doc:id="8ba48dc7-0f83-4529-a284-3a3dee1c72ed" expression="#[payload]" is="#[MunitTools::equalTo(vars.expected)]" />
+			</munit:validation>
+		</munit:test>
+	<munit:test name="getUniversalTest_noElementsFound" doc:id="4b41989c-7ab2-4b84-af7b-7dde955e28e1" description="Test">
+			<munit:behavior>
+				<ee:transform doc:name="Copy_of_Set Mocking data" doc:id="7a3a4f19-9c34-4a8d-a9fd-77b7704466c2">
+					<ee:message />
+					<ee:variables>
+						<ee:set-variable variableName="inputFromNASA"><![CDATA[%dw 2.0
+output application/json
+---
+{
+"results": [
+	        [
+            "59a13eea9600025c7e6c09d4",
+            "ARC-17386-1",
+            "Comprehensive oculomotor behavioral response assessment (COBRA)",
+            "An eye movement-based methodology and assessment tool may be used to     quantify many aspects of human dynamic visual processing using a     relatively simple and short oculomotor task, noninvasive video-based eye     tracking, and validated oculometric analysis techniques. By examining the     eye movement responses to a task including a radially-organized     appropriately randomized sequence of Rashbass-like step-ramp     pursuit-tracking trials, distinct performance measurements may be     generated that may be associated with, for example, pursuit initiation     (e.g., latency and open-loop pursuit acceleration), steady-state tracking     (e.g., gain, catch-up saccade amplitude, and the proportion of the     steady-state response consisting of smooth movement), direction tuning     (e.g., oblique effect amplitude, horizontal-vertical asymmetry, and     direction noise), and speed tuning (e.g., speed responsiveness and     noise). This quantitative approach may provide fast and results (e.g., a     multi-dimensional set of oculometrics and a single scalar impairment     index) that can be interpreted by one without a high degree of scientific     sophistication or extensive training.",
+            "ARC-17386-1",
+            "health medicine and biotechnology",
+            "",
+            "",
+            "",
+            "ARC",
+            "",
+            ""
+        ],
+        [
+            "5992be40960002c32bda7d0f",
+            "ARC-17386-2",
+            "Comprehensive Oculomotor Behavioral Response Assessment (COBRA)",
+            "Dynamic visual processing remains difficult to assess clinically, due at least in part to the lack of a readily-available assessment tool and a codified set of performance standards.  Severe impairments in dynamic visual function can stem from a large number of causes, including: stroke, traumatic brain injury, autism, Alzheimers disease, schizophrenia, degenerative retinal disease, drug toxicity, aging, and spaceflight-induced visual impairment.  To assess various aspects of dynamic visual function including peripheral attention, peripheral spatial localization, perceptual motion processing, and oculomotor responsiveness, we developed a simple fifteen-minute clinical test that measures and computes ten eye-movement-based, i.e., oculometric, measures.  Our oculometric tool may be useful to clinicians to localize affected brain regions following trauma, degenerative disease, or aging, to characterize and quantify clinical deficits, to monitor recovery of function after injury, and to detect altered or impaired visual performance at sub-clinical levels.  This sensitive assessment tool has immediate applicability as a screening tool by comparing the oculometric measures of an individual to a normal baseline population, or from the same individual before and after exposure to a potentially-traumatic event (e.g., a boxing match, football game, combat tour, space mission), or on an ongoing basis to monitor performance as it returns to baseline following injury.  Applications of our oculometric tool include screening: patients for deficits in visual function; pilot candidates based upon inherent dynamic visual capabilities; patients, players, or soldiers for recovery by periodic reassessment following injury;  automobile drivers as they age; and astronaut visual status before and after a mission.",
+            "ARC-17386-2",
+            "health medicine and biotechnology",
+            "",
+            "",
+            "",
+            "ARC",
+            "",
+            ""
+        ],
+        [
+            "57a06e5b960002877a676459",
+            "NPO-49553-3",
+            "Biblade sampler",
+            "A BiBlade sampler may include a first blade and a second blade in a     retracted position. The BiBlade sampler may also include a gripper, which     is driven by an actuator. The gripper may include a plurality of fingers     to force the first blade and the second blade to remain in a retracted     position. When the fingers are unhooked, the first blade and the second     blade penetrate a surface of an object.",
+            "NPO-49553-3",
+            "instrumentation",
+            "",
+            "",
+            "",
+            "JPL",
+            "",
+            ""
+        ]
+]
+
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<munit-tools:mock-when doc:name="Copy_of_Mock when" doc:id="55f4f94d-cc89-499c-a094-a810ebe8ac7f" processor="http:request">
+					<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Get Data from NASA api" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="6644905b-72be-455d-a326-0f18e6989633" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+						<munit-tools:payload value="#[vars.inputFromNASA]" mediaType="application/json" />
+					</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<ee:transform doc:name="Copy_of_Set queryParams" doc:id="8170cb4d-9afa-4be4-9e73-11404e2124e1">
+					<ee:message>
+						<ee:set-attributes><![CDATA[%dw 2.0
+output application/json
+---
+{
+	queryParams: {
+		category: "undefined",
+		research: "ARC"
+	}
+}]]></ee:set-attributes>
+					</ee:message>
+					<ee:variables />
+				</ee:transform>
+				<flow-ref doc:name="Copy_of_Flow-ref to getUniversal" doc:id="d825ae11-c6a6-4bfb-95f2-becc75849035" name="get:\patents:space-events-demo-config" />
+				<ee:transform doc:name="Copy_of_Set Expected Result" doc:id="0a19def7-81d0-4369-b117-3d0492b9146e">
+					<ee:message />
+					<ee:variables>
+						<ee:set-variable variableName="expected"><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "No elements found",
+	category: "undefined",
+	research: "ARC"
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-that doc:name="Copy_of_Assert that" doc:id="447cf69a-2495-43ff-8550-3a8c0ded8a95" expression="#[payload]" is="#[MunitTools::equalTo(vars.expected)]" />
+			</munit:validation>
+		</munit:test>
+	</mule>

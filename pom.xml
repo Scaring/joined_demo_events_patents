@@ -7,7 +7,7 @@
 	<version>1.0.0</version>
 	<packaging>mule-application</packaging>
 
-	<name>space-events-demo-app</name>
+	<name>demo_joined</name>
 
 	<description/>
 	<properties>

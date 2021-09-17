@@ -21,3 +21,10 @@ validate:
 deployed:
   host: "connected-demo-kdo.us-e2.cloudhub.io"
   path: "/api"
+
+patents:
+  protocol: "HTTPS"
+  host: "api.nasa.gov"
+  basepath: "/"
+  path: "techtransfer/patent"
+  api_key: "trV4BkJBohwK9rrg02x0VQUWnKNIzrkwyi54v4W7"
