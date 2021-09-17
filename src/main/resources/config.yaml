@@ -18,3 +18,10 @@ validate:
   error_message_notFound: "By your query events not found!"
   tooManyRecords: "We found too many records for your query, try one of the next!"
   
+patents:
+  protocol: "HTTPS"
+  host: "api.nasa.gov"
+  basepath: "/"
+  path: "techtransfer/patent"
+  api_key: "trV4BkJBohwK9rrg02x0VQUWnKNIzrkwyi54v4W7"
+  

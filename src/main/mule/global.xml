@@ -16,6 +16,9 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<configuration-properties doc:name="Configuration properties" doc:id="341bf05b-d18b-4150-b9f3-4626aa150f9f" file="config.yaml" />
 	<http:request-config name="HTTP_Request_config_nasa" doc:name="HTTP Request configuration" doc:id="9c9049ee-3352-4f67-af9a-123f6e1fb6de" basePath="${nasa.basepath}" >
 		<http:request-connection protocol="HTTPS" host="${nasa.host}" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration_Patents" doc:name="HTTP Request configuration" doc:id="da711e40-08aa-4204-a93e-6edc4995bc85" >
+	 	<http:request-connection host="${patents.host}" protocol="${patents.protocol}" />
 	</http:request-config>	
 
 </mule>
