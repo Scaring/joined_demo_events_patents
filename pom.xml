@@ -7,7 +7,7 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>mule-application</packaging>
 
-	<name>space-events-demo-app</name>
+	<name>demo_joined</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -52,21 +52,17 @@
 					<coverage>
 						<runCoverage>true</runCoverage>
 						<failBuild>false</failBuild>
-						
 						<requiredApplicationCoverage>0</requiredApplicationCoverage>
 						<requiredResourceCoverage>0</requiredResourceCoverage>
 						<requiredFlowCoverage>0</requiredFlowCoverage>
-						
 						<ignoreFiles>
 							<ignoreFile>interface.xml</ignoreFile>
 						</ignoreFiles>
-						
 						<formats>
 							<format>console</format>
 							<format>html</format>
 						</formats>
 					</coverage>
-					
 					<runtimeVersion>4.3.0-20210622</runtimeVersion>
 				</configuration>
 			</plugin>
