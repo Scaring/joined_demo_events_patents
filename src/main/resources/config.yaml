@@ -1,14 +1,20 @@
 http:
-  port: "8084"
+  port: "8081"
   
 thespacedevs:
   host: "lldev.thespacedevs.com"
-  basepath: "/2.0.0"
+  basepath: "2.0.0"
   
 nasa:
+  protocol: "HTTPS"
   host: "api.nasa.gov"
-  basepath: "/planetary"
   api_key: "vej4yJeNbdS1bjusRgsbUGZf0WA9cXOoOV62Kua5"
+  events:  
+    basepath: "planetary"
+    path: "apod"
+  patents:
+    basepath: "techtransfer"
+    path: "patent"
   
 validate:
   event_type: "^(Moon Landing|Flyby|Press Event|Docking|Undocking|Landing|Launch|Rehearsal|Relocation|Release|Celestial Event|Unknown|EVA|Berthing|Static Fire|Spacecraft Event|Abort Test|Hatch Opening|Test Flight|Change of Command|Orbital Insertion|Farewell Ceremony|Ambient Pressure Test|Cryoproof Test|Wet Dress Rehearsal)$"
@@ -18,10 +24,9 @@ validate:
   error_message_notFound: "By your query events not found!"
   tooManyRecords: "We found too many records for your query, try one of the next!"
   
-patents:
-  protocol: "HTTPS"
-  host: "api.nasa.gov"
-  basepath: "/"
-  path: "techtransfer/patent"
-  api_key: "trV4BkJBohwK9rrg02x0VQUWnKNIzrkwyi54v4W7"
+deployed:
+  host: "connected-demo-kdo.us-e2.cloudhub.io"
+  basepath: "api"
   
+slack:
+  webhookurl: "https://hooks.slack.com/services/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"
