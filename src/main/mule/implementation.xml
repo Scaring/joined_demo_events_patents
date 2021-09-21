@@ -31,7 +31,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 	<sub-flow name="getSpaceEvents" doc:id="da5b96f9-add3-4729-b756-6b2f439d9022" >
 		<flow-ref doc:name="set-limit-and-offset" doc:id="7776b42e-174e-4fdf-8080-fd143a24300e" name="set-limit-and-offset"/>
 		<flow-ref doc:name="set-type-period-validate-period" doc:id="784a9c92-307e-40e5-a5d4-eb1b62c0b6c4" name="set-type-period-validate-period"/>
-		<http:request method="GET" doc:name="GET /events" doc:id="91e6047d-a590-4879-97ee-94dec39ad916" config-ref="HTTP_Request_configuration" path="/event">
+		<http:request method="GET" doc:name="GET /events" doc:id="91e6047d-a590-4879-97ee-94dec39ad916" config-ref="thespacedevs" path="/event">
 					<http:query-params><![CDATA[#[output application/java
 ---
 {
@@ -66,7 +66,7 @@ else
 	<sub-flow name="getSpaceEventByName" doc:id="3776597a-82e9-4cef-9d1b-f1e8b535c282">
 		<set-variable value='#[message.attributes.queryParams.name default ""]' doc:name="name" doc:id="86cf1294-dc2f-4cb8-a41d-2ed92129ce82" variableName="name"/>
 		<logger level="INFO" doc:name="name" doc:id="7c750509-3373-4fde-9417-46547175fe13" message='#["name: " ++ vars.name as String]'/>
-		<http:request method="GET" doc:name="GET /event?name={searched}" doc:id="6d27a4ca-daca-4499-8f25-699cfd0f70c0" config-ref="HTTP_Request_configuration" path="/event/">
+		<http:request method="GET" doc:name="GET /event?name={searched}" doc:id="6d27a4ca-daca-4499-8f25-699cfd0f70c0" config-ref="thespacedevs" path="/event/">
 			<http:query-params ><![CDATA[#[output application/java
 ---
 {
@@ -120,17 +120,19 @@ output application/json
 				<set-variable value="#[payload]" doc:name="objectEventByName" doc:id="3f3a4a0f-cc20-46cd-97d7-89747dbaf574" variableName="eventByName" />
 				<set-variable value="#[vars.eventByName.date[0 to 9]]" doc:name="date" doc:id="2a8d7154-1370-4eb1-9987-9f50886854a5" variableName="date" />
 				<logger level="INFO" doc:name="date" doc:id="49b91176-26d6-4ea3-89b6-5de27e531baa" message='#["date: " ++ vars.date as String]' />
-				<http:request method="GET" doc:name="nasa-apod" doc:id="56c704d3-6dcb-44d9-9faa-199aacf9f9a5" config-ref="HTTP_Request_config_nasa" path="/apod" >
-					<http:query-params ><![CDATA[#[output application/java
+				<choice doc:name="Choice" doc:id="50c9f738-7b57-4451-82e6-8d8fc1c8975c" >
+					<when expression='#[vars.date as Date{format:"yyyy-MM-dd"} &lt; now() as Date{format:"yyyy-MM-dd"} and vars.date as Date{format:"yyyy-MM-dd"} &gt; "1995-06-16" as Date{format:"yyyy-MM-dd"}]'>
+						<http:request method="GET" doc:name="nasa-apod" doc:id="56c704d3-6dcb-44d9-9faa-199aacf9f9a5" config-ref="nasa_apod" path="/${nasa.events.path}">
+					<http:query-params><![CDATA[#[output application/java
 ---
 {
 	"date" : vars.date,
 	"api_key" : Mule::p('nasa.api_key')
 }]]]></http:query-params>
 				</http:request>
-				<ee:transform doc:name="add-nasa-data-to-event" doc:id="1b3fb980-9912-42ee-b681-98954a683c62" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+						<ee:transform doc:name="add-nasa-data-to-event" doc:id="1b3fb980-9912-42ee-b681-98954a683c62">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
@@ -151,12 +153,33 @@ output application/json
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
+					</when>
+					<otherwise >
+						<ee:transform doc:name="event" doc:id="a022c8ae-ee9b-4119-b934-12c872181820" >
+							<ee:message >
+								<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	id: vars.eventByName.id,
+	name: vars.eventByName.name,
+	date: vars.eventByName.date,
+	location: vars.eventByName.location,
+	"type": vars.eventByName."type",
+	description: vars.eventByName.description,
+	url: vars.eventByName.url,
+	feature_image: vars.eventByName.feature_image
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+					</otherwise>
+				</choice>
 			</otherwise>
 		</choice>
 	</sub-flow>
 	<sub-flow name="getUpcomingSpaceEvents" doc:id="eed31231-5f13-4b24-a320-78170b589a1d" >
 		<flow-ref doc:name="set-limit-and-offset" doc:id="f44a13c2-24f4-4c03-a623-7491c63c1d9d" name="set-limit-and-offset"/>
-		<http:request method="GET" doc:name="GET /upcoming" doc:id="fcb745b6-6da9-4882-a3e1-7af683000170" config-ref="HTTP_Request_configuration" path="/event/upcoming" >
+		<http:request method="GET" doc:name="GET /upcoming" doc:id="fcb745b6-6da9-4882-a3e1-7af683000170" config-ref="thespacedevs" path="/event/upcoming" >
 			<http:query-params ><![CDATA[#[output application/java
 ---
 {
@@ -187,5 +210,71 @@ payload.results map ( result , indexOfResult ) -> {
 				</ee:set-payload>
 			</ee:message>
 		</ee:transform>
+	</sub-flow>
+	<sub-flow name="getUniversal" doc:id="ac3e5e1a-f02b-426a-a5dd-942ab7f6a2f3">
+		<logger level="INFO" doc:name="Starting Logger" doc:id="5d0305f5-8c5d-4718-be17-c5f744252311" message="#[payload]" />
+		<set-variable value='#[message.attributes.queryParams.research default ""]' doc:name="Set Research" doc:id="60f0e585-86f9-4699-9dc3-33d4ca1342be" variableName="research" />
+		<set-variable value='#[message.attributes.queryParams.category default ""]' doc:name="Set Category" doc:id="fe943d7f-4c36-4f98-96c4-a80b1f824247" variableName="category" />
+		<flow-ref doc:name="ofset_set" doc:id="77cfd85c-57ed-4704-a295-2e1c425e9125" name="set-limit-and-offset"/>
+		<http:request method="GET" doc:name="Get Data from NASA api" doc:id="6644905b-72be-455d-a326-0f18e6989633" config-ref="nasa_patents" path="/${nasa.patents.path}/">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"api_key" : Mule::p('nasa.api_key')
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Make arrays into objects" doc:id="f93508c5-6dcc-4476-a807-a61e7d818e64">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload.results map(value, index)-> {
+	id : (index),
+	(value map(v,i) -> ('d' ++ (i)) : v)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Transform to Patent type" doc:id="501e68ca-d6b6-47ea-8324-0032664eae65">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map(val,ind)-> {
+	category: val.d5,
+	name: val.d1,
+	patentName: val.d2,
+	Description: val.d3,
+	researchCenter: val.d9
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Filter with query" doc:id="b8c151dc-da38-4b05-a590-ed25cd0021c4">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+if(vars.category != "" and vars.research != "")
+	payload filter((item,ind) -> item.researchCenter == vars.research and item.category == vars.category)
+else if(vars.category != "")
+	payload filter((item,ind) -> item.category == vars.category)
+else if(vars.research != "")
+	payload filter((item,ind) -> item.researchCenter == vars.research)
+else
+	payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Paginate" doc:id="26194701-bcf2-4c7c-9a70-5e55e4dff910" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload[vars.offset to (vars.offset + vars.limit - 1)]
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<validation:is-not-empty-collection doc:name="Is not empty collection" doc:id="b8a607ad-68a4-4cdb-9fd7-551c9261c6e4">
+			<error-mapping sourceType="VALIDATION:EMPTY_COLLECTION" targetType="APP:NO_ELEMENTS_FOUND" />
+		</validation:is-not-empty-collection>
+		<logger level="INFO" doc:name="End Logger" doc:id="a015601e-94a7-4cae-99c2-ab5e31471c48" />
 	</sub-flow>
 </mule>

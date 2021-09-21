@@ -5,6 +5,21 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<error-handler name="errorHandling" doc:id="a67f169f-6770-4661-9b43-246270b262d4" >
+	<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="af463071-1d03-4bae-8703-356be98f2c09" type="APP:NO_ELEMENTS_FOUND">
+			<ee:transform doc:name="Make no elements msg" doc:id="10b12872-56c1-43c6-b04d-203c4f60c05e">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "No elements found",
+	category: vars.category,
+	research: vars.research
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<set-variable value="400" doc:name="httpStatus" doc:id="b479d9cf-d18d-4935-b293-12eeff329787" variableName="httpStatus" />
+		</on-error-continue>
 		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="56c7b793-a22c-41fe-a022-8100839da528" type="APP:PERIOD_WRONG_FORMAT" >
 			<ee:transform doc:name="Transform Message" doc:id="0c5f2d23-feab-4ed1-8ee0-a6bd46330c01" >
 				<ee:message >

@@ -3,11 +3,11 @@
     <flow name="space-events-demo-main">
         <http:listener config-ref="space-events-demo-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:response>
             <http:error-response statusCode="#[vars.httpStatus default 500]">
-                <http:body>#[payload]</http:body>
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
         <apikit:router config-ref="space-events-demo-config" />
@@ -37,5 +37,9 @@
     <flow name="get:\event:space-events-demo-config">
         <flow-ref doc:name="getSpaceEventByName" doc:id="cbc4ff51-7807-4102-b0ce-2ce1af5532fd" name="getSpaceEventByName" targetValue="#[message]" />
         <error-handler ref="errorHandling" />
+    </flow>
+    <flow name="get:\patents:space-events-demo-config">
+		<flow-ref doc:name="Flow Reference" doc:id="f809950d-8fd5-4032-9490-7d94c5e92ed3" name="getUniversal"/>
+		<error-handler ref="errorHandling" />
     </flow>
 </mule>

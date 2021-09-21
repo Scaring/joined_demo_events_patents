@@ -4,7 +4,9 @@ title: space-events-demo
 types:
   Event: !include /dataTypes/Event.raml
   EventType: !include /dataTypes/EventType.raml
-
+  Patent: !include /dataTypes/Patent.raml
+  ResearchCenter: !include /dataTypes/ResearchCenter.raml
+  
 /events:
   get:
     description: Return by 10 space events.
@@ -55,3 +57,24 @@ types:
             type: Event[]
             examples:
               output: !include /examples/EventsExample.raml
+              
+/patents:
+  description: get patents
+  get:
+    queryParameters:
+      research:
+        type: ResearchCenter
+        required: false
+      category:
+        type: string
+        required: false
+    responses:
+      200:
+        body:
+          application/json:
+            type: Patent[]
+      400:
+        body:
+          application/json:
+            example:
+              message: "Bad request"
