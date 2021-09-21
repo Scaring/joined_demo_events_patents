@@ -215,6 +215,7 @@ payload.results map ( result , indexOfResult ) -> {
 		<logger level="INFO" doc:name="Starting Logger" doc:id="5d0305f5-8c5d-4718-be17-c5f744252311" message="#[payload]" />
 		<set-variable value='#[message.attributes.queryParams.research default ""]' doc:name="Set Research" doc:id="60f0e585-86f9-4699-9dc3-33d4ca1342be" variableName="research" />
 		<set-variable value='#[message.attributes.queryParams.category default ""]' doc:name="Set Category" doc:id="fe943d7f-4c36-4f98-96c4-a80b1f824247" variableName="category" />
+
 		<flow-ref doc:name="ofset_set" doc:id="77cfd85c-57ed-4704-a295-2e1c425e9125" name="set-limit-and-offset"/>
 		<http:request method="GET" doc:name="Get Data from NASA api" doc:id="6644905b-72be-455d-a326-0f18e6989633" config-ref="nasa_patents" path="/${nasa.patents.path}/">
 			<http:query-params ><![CDATA[#[output application/java
