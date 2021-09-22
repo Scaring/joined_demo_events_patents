@@ -1,0 +1,26 @@
+%dw 2.0
+
+type auto_ac3e5e1a_f02b_426a_a5dd_942ab7f6a2f3_Input_Attributes = {|
+  clientCertificate?: {|
+    publicKey?: {|  |}, 
+    "type"?: String, 
+    encoded?: Binary
+  |}, 
+  headers: {|  |}, 
+  listenerPath: String, 
+  method: String, 
+  queryParams: {|
+    research?: "ARC" | "SSC" | "LARC" | "JPL" | "MSFC" | "GSFC" | "GRC" | "KSC" | "JSC" | "DFRC", 
+    category?: String
+  |}, 
+  queryString: String, 
+  relativePath: String, 
+  remoteAddress: String, 
+  requestPath: String, 
+  requestUri: String, 
+  scheme: String, 
+  uriParams: {|  |}, 
+  version: String, 
+  localAddress: String
+|}
+
