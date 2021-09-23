@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="slackEventsList" doc:id="1f2ce57e-34da-4bb7-b00b-9682e60de7dd" >
+		<http:listener doc:name="POST /slack/events/" doc:id="346e6a0f-60b0-49c1-9625-4b74ebae8e6c" config-ref="space-events-demo-httpListenerConfig" path="/slack/events/" allowedMethods="POST"/>
+		<choice doc:name="Choice" doc:id="e9720415-c42c-4e04-8bc0-21da3539e04b" >
+			<when expression='#[payload.text != ""]'>
+				<ee:transform doc:name="urlencoded2dw" doc:id="28e0c828-a4f3-4b68-b692-96a355c5712c">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/dw
+var arr = payload.text splitBy(" ") map {
+    (($ splitBy("="))[0]): ($ splitBy("="))[1]
+}
+---
+arr reduce ((env, obj={}) -> obj ++ env)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<ee:transform doc:name="dw2json" doc:id="275424cd-81c6-4e8b-860a-982894c8e982">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload mapObject ((value, key, index) -> 
+	{
+		(if (key ~= "type") (key): value splitBy("_") joinBy(" ") else (key): value)
+	}
+)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<logger level="INFO" doc:name="payload" doc:id="a91c1388-25e2-44b8-bf18-8f6a85c5203c" message="#[payload]" />
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="payload.text" doc:id="08636155-711c-420c-947c-c8e54cba6d49" message="Text is not defined!"/>
+			</otherwise>
+		</choice>
+		<http:request method="GET" doc:name="GET /events" doc:id="a4ed73f9-d1a0-445c-b84a-0768b130d0d7" config-ref="deployed_app" path="/events">
+			<http:query-params ><![CDATA[#[%dw 2.0
+output application/json
+---
+payload]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="slack formated json" doc:id="c33d13aa-6fe0-4d53-a5a9-4af7d785f38e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+		"blocks": payload map {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Event name*: " ++ $.name ++ "\n*Event type*: " ++ $."type" ++ "\n*Location*: " ++ $.location ++ "\n*Date*: " ++ $.date
+			}
+		}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<http:request method="POST" doc:name="sand webhook message to slack" doc:id="6234d9dd-77a5-4b37-bbd7-65453e10a257" url="${slack.webhookurl}">
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/json"
+}]]]></http:headers>
+		</http:request>
+	</flow>
+	<flow name="slackSingleEvent" doc:id="c2294f73-7f99-4b8e-a251-3d1333e25bdd" >
+		<http:listener doc:name="POST /slack/event/" doc:id="eb3198f8-6097-4b8d-9fc9-ec3aab4cce18" config-ref="space-events-demo-httpListenerConfig" path="/slack/event/" allowedMethods="POST"/>
+		<logger level="INFO" doc:name="payload.text" doc:id="6068b4f0-2958-40a1-99d0-e0b2189b879c" message="#[payload.text]" />
+		<ee:transform doc:name="urlencoded2json" doc:id="f4562e9a-864f-48fa-b287-49d5faf24bf1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	((payload.text splitBy("="))[0]): (payload.text splitBy("="))[1]
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="payload" doc:id="6f7590b3-e379-4011-90d6-8e8268c8d41f" message="#[payload]" />
+		<http:request method="GET" doc:name="GET /event" doc:id="53ce8f9c-2b6a-4cc9-b715-cbb215bafd05" config-ref="deployed_app" path="/event" >
+			<http:query-params ><![CDATA[#[payload]]]></http:query-params>
+		</http:request>
+	</flow>
+	<flow name="slackUpcoming" doc:id="91a798cf-103a-4689-8fe6-10e50faadb1f" >
+		<http:listener doc:name="POST /slack/upcoming/" doc:id="bf4c7653-038c-433a-a82a-2bbcafb096a3" config-ref="space-events-demo-httpListenerConfig" path="/slack/upcoming/"/>
+		<http:request method="GET" doc:name="GET /upcoming" doc:id="813c251e-bbbe-461d-b424-4015bb5b71fb" config-ref="deployed_app" path="/upcoming" >
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"limit" : 50
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="516de956-d427-4eba-b645-a81db9faefb5" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map {
+	name: $.name,
+	"type": $."type",
+	date: $.date,
+	location: $.location
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
