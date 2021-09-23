@@ -29,4 +29,4 @@ deployed:
   basepath: "api"
   
 slack:
-  webhookurl: "https://hooks.slack.com/services/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"
+  webhookurl: "https://hooks.slack.com/services/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"

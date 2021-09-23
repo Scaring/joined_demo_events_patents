@@ -80,7 +80,7 @@ else
 			<error-mapping sourceType="VALIDATION:INVALID_BOOLEAN" targetType="APP:EVENTS_NOT_FOUND" />
 		</validation:is-true>
 		<choice doc:name="Choice" doc:id="f53fee7d-9d53-499b-aaa4-6ed3cf140a35" >
-			<when expression="#[vars.found &gt; 1]">
+			<when expression="#[vars.found &gt; 1 and payload.results[0].name != vars.name]">
 				<ee:transform doc:name="too many records" doc:id="45fc9888-c197-4b04-b587-1c10f683813f" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
@@ -140,7 +140,7 @@ output application/json
 	name: vars.eventByName.name,
 	date: vars.eventByName.date,
 	picture_of_the_day: {
-		hdurl: payload.hdurl,
+		hdurl: payload.url,
 		explanation: payload.explanation
 	},
 	location: vars.eventByName.location,
