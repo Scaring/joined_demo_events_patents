@@ -408,7 +408,7 @@ output application/json
 			"elements": [
 				{
 					"type": "mrkdwn",
-					"text": "Use next *_slash comands_*:\n/howmany - comon info and events count; \n/events limit=10 offset=0 type=Press_Event period=2020 (all are optional);\n/upcoming limit=10 offset=0 (all are optional)\n/event 2017 NASA Astronaut class graduation ceremony (event name required)."
+					"text": "Use next *_slash comands_*:\n/info - comon info and events count; \n/events limit=10 offset=0 type=Press_Event period=2020 (all are optional);\n/upcoming limit=10 offset=0 (all are optional)\n/event 2017 NASA Astronaut class graduation ceremony (event name required)."
 				}
 			]
 		}
