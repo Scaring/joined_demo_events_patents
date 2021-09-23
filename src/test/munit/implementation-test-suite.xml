@@ -89,9 +89,7 @@ output application/json
 			</ee:transform>
 			<munit-tools:mock-when doc:name="getSpaceEvents" doc:id="9e38bbe9-e41d-487b-9a3f-72d65fe4e856" processor="http:request">
 				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="GET /events" attributeName="doc:name" />
 					<munit-tools:with-attribute whereValue="91e6047d-a590-4879-97ee-94dec39ad916" attributeName="doc:id" />
-					<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
 					<munit-tools:payload value="#[vars.apiResponse]" mediaType="application/json" />
@@ -506,12 +504,10 @@ output application/json
 					</ee:variables>
 				</ee:transform>
 				<munit-tools:mock-when doc:name="getSpaceEvents" doc:id="fb1810f4-1071-4739-9c6e-05c60617a64f" processor="http:request">
-					<munit-tools:with-attributes>
-						<munit-tools:with-attribute whereValue="GET /events" attributeName="doc:name" />
-						<munit-tools:with-attribute whereValue="91e6047d-a590-4879-97ee-94dec39ad916" attributeName="doc:id" />
-						<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
-					</munit-tools:with-attributes>
-					<munit-tools:then-return>
+					<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="91e6047d-a590-4879-97ee-94dec39ad916" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
 						<munit-tools:payload value="#[vars.apiResponse]" mediaType="application/json" />
 					</munit-tools:then-return>
 				</munit-tools:mock-when>
@@ -1156,7 +1152,7 @@ output application/json
 			<munit-tools:assert-that doc:name="Assert that" doc:id="ea40eb44-b6a4-4968-af30-3dd658652543" is="#[MunitTools::equalTo(vars.expectedResponse)]" expression="#[payload]"/>
 		</munit:validation>
 	</munit:test>
-	<munit:test name="getSpaceEventByNameTest-one-record" doc:id="87668a00-a5b2-4e99-bc8b-0702eac6f669" description="Test">
+	<munit:test name="getSpaceEventByNameTest-one-record-passe-date" doc:id="87668a00-a5b2-4e99-bc8b-0702eac6f669" description="Test">
 			<munit:behavior>
 				<ee:transform doc:name="Transform Message" doc:id="93806bfd-bc9f-4ec0-b8a9-a5294ef33daa">
 					<ee:message />
@@ -1165,7 +1161,7 @@ output application/json
 output application/json
 ---
 {
-    "hdurl": "https://apod.nasa.gov/apod/image/1907/a11pan1040226lftsm.jpg",
+    "url": "https://apod.nasa.gov/apod/image/1907/a11pan1040226lftsm.jpg",
     "explanation": "Have you seen a panorama from another world lately? Assembled from high-resolution scans of the original film frames, this one sweeps across the magnificent desolation of the Apollo 11 landing site on the Moon's Sea of Tranquility. The images were taken by Neil Armstrong looking out his window of the Eagle Lunar Module fifty years ago, shortly after the July 20, 1969 landing. The frame at the far left (AS11-37-5449) is the first picture taken by a person on another world. Toward the south, thruster nozzles can be seen in the foreground on the left, while at the right, the shadow of the Eagle is visible to the west. For scale, the large, shallow crater on the right has a diameter of about 12 meters. Frames taken from the Lunar Module windows about an hour and a half after landing, before walking on the lunar surface, were intended to initially document the landing site in case an early departure was necessary."
 }]]></ee:set-variable>
 					<ee:set-variable variableName="eventMock" ><![CDATA[%dw 2.0
@@ -1245,7 +1241,75 @@ output application/json
 				<munit-tools:assert-that doc:name="Assert that" doc:id="3c2ada89-07e1-4f3c-93a1-af49a397ac94" expression="#[payload]" is="#[MunitTools::equalTo(vars.expectedResponse)]" />
 			</munit:validation>
 		</munit:test>
-		<munit:test name="getUniversalTest" doc:id="b563a15d-b9ef-4b42-bec0-5d0ad474c477" description="Test">
+		<munit:test name="getSpaceEventByNameTest-one-record-future-date" doc:id="15bfd6ed-f17b-4d0b-b4cf-6121f2ffe597" description="Test">
+			<munit:behavior>
+				<ee:transform doc:name="Transform Message" doc:id="c049a266-edbe-4854-91a3-34d92c9d3128">
+					<ee:message />
+					<ee:variables>
+						<ee:set-variable variableName="eventMock"><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "count": 1,
+  "results": [
+    {
+      "id": 25,
+      "url": "https://lldev.thespacedevs.com/2.2.0/event/25/",
+      "slug": "apollo-11th-50th-anniversary-lunar-landing-25",
+      "name": "Apollo 11th 50th Anniversary - Lunar Landing",
+      "type": {
+        "id": 7,
+        "name": "Moon Landing"
+      },
+      "description": "The United States' Apollo 11 was the first crewed mission to land on the Moon, on 20 July 1969. To date, the United States is the only country to have successfully conducted crewed missions to the Moon, with the last departing the lunar surface in December 1972.\r\n\r\nA total of twelve men have landed on the Moon. This was accomplished with two US pilot-astronauts flying a Lunar Module on each of six NASA missions across a 41-month period starting 20 July 1969 UTC, with Neil Armstrong and Buzz Aldrin on Apollo 11, and ending on 14 December 1972 UTC with Gene Cernan and Jack Schmitt on Apollo 17. Cernan was the last to step off the lunar surface.",
+      "location": "Lunar Surface",
+      "news_url": "https://www.nasa.gov/feature/apollo-11-in-real-time-50-years-later/",
+      "video_url": "https://apolloinrealtime.org/11/",
+      "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/apollo252011th2520-2520lunar2520landing252050th2520anniversary_image_20190715211113.jpg",
+      "date": "2219-07-20T20:17:00Z"
+    }
+  ]
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<munit-tools:mock-when doc:name="Mock when" doc:id="fbc802db-16d4-4a9c-b60a-6cb11c0c4521" processor="http:request">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="6d27a4ca-daca-4499-8f25-699cfd0f70c0" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+					<munit-tools:then-return>
+						<munit-tools:payload value="#[vars.eventMock]" mediaType="application/json" />
+					</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<munit:set-event doc:name="Set Event" doc:id="522e5bdd-733d-46f3-b4f4-1261a3b88052" cloneOriginalEvent="true">
+					<munit:attributes value='#[queryParams:{name:"Apollo 11th 50th Anniversary - Lunar Landing"}]' />
+				</munit:set-event>
+				<flow-ref doc:name="Flow-ref to getSpaceEventByName" doc:id="dc545c2a-a678-4d36-839e-35eaa17781e6" name="getSpaceEventByName" />
+				<ee:transform doc:name="Transform Message" doc:id="53e164ee-dcb3-4b68-951a-d97db2dc5eae">
+					<ee:message />
+					<ee:variables>
+						<ee:set-variable variableName="expectedResponse"><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "id": 25,
+    "name": "Apollo 11th 50th Anniversary - Lunar Landing",
+    "date": "2219-07-20T20:17:00Z",
+    "location": "Lunar Surface",
+    "type": "Moon Landing",
+    "description": "The United States' Apollo 11 was the first crewed mission to land on the Moon, on 20 July 1969. To date, the United States is the only country to have successfully conducted crewed missions to the Moon, with the last departing the lunar surface in December 1972.\r\n\r\nA total of twelve men have landed on the Moon. This was accomplished with two US pilot-astronauts flying a Lunar Module on each of six NASA missions across a 41-month period starting 20 July 1969 UTC, with Neil Armstrong and Buzz Aldrin on Apollo 11, and ending on 14 December 1972 UTC with Gene Cernan and Jack Schmitt on Apollo 17. Cernan was the last to step off the lunar surface.",
+    "url": "https://lldev.thespacedevs.com/2.2.0/event/25/",
+    "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/apollo252011th2520-2520lunar2520landing252050th2520anniversary_image_20190715211113.jpg"
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-that doc:name="Assert that" doc:id="a1454f38-3ede-4dd0-8af5-099f569c4e58" expression="#[payload]" is="#[MunitTools::equalTo(vars.expectedResponse)]" />
+			</munit:validation>
+		</munit:test>
+	<munit:test name="getUniversalTest" doc:id="b563a15d-b9ef-4b42-bec0-5d0ad474c477" description="Test">
 		<munit:behavior >
 			<ee:transform doc:name="Set Mocking Data" doc:id="94a5d7a0-fd5d-4744-b3e7-d5be63915195" >
 				<ee:message >
