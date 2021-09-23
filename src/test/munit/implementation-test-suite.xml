@@ -1382,6 +1382,19 @@ output application/json
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
+			<ee:transform doc:name="Set queryParams" doc:id="7564f191-5667-4f05-b2dd-c38a6e7a3292">
+				<ee:message>
+					<ee:set-attributes><![CDATA[%dw 2.0
+output application/json
+---
+{
+	queryParams: {
+		limit: 3
+	}
+}]]></ee:set-attributes>
+				</ee:message>
+				<ee:variables />
+			</ee:transform>
 			<flow-ref doc:name="Flow-ref to getUniversal" doc:id="6acbc677-8f1a-45d0-8b8c-6bab6d641dac" name="get:\patents:space-events-demo-config"/>
 			<ee:transform doc:name="Set expected result" doc:id="8ea0b1c2-5b8e-44a4-96b1-1bd55600feee">
 				<ee:message>
@@ -1494,7 +1507,8 @@ output application/json
 ---
 {
 	queryParams: {
-		research: "ARC"
+		research: "ARC",
+		limit: 2
 	}
 }]]></ee:set-attributes>
 				</ee:message>
@@ -1604,7 +1618,8 @@ output application/json
 ---
 {
 	queryParams: {
-		category: "instrumentation"
+		category: "instrumentation",
+		limit: 1
 	}
 }]]></ee:set-attributes>
 				</ee:message>
@@ -1706,7 +1721,8 @@ output application/json
 ---
 {
 	queryParams: {
-		category: "undefined"
+		category: "undefined",
+		limit: 3
 	}
 }]]></ee:set-attributes>
 					</ee:message>
@@ -1799,7 +1815,7 @@ output application/json
 				</munit-tools:mock-when>
 			</munit:behavior>
 			<munit:execution>
-				<ee:transform doc:name="Copy_of_Set queryParams" doc:id="8170cb4d-9afa-4be4-9e73-11404e2124e1">
+				<ee:transform doc:name="Set queryParams" doc:id="8170cb4d-9afa-4be4-9e73-11404e2124e1">
 					<ee:message>
 						<ee:set-attributes><![CDATA[%dw 2.0
 output application/json
@@ -1807,14 +1823,15 @@ output application/json
 {
 	queryParams: {
 		category: "undefined",
-		research: "ARC"
+		research: "ARC",
+		limit: 3
 	}
 }]]></ee:set-attributes>
 					</ee:message>
 					<ee:variables />
 				</ee:transform>
-				<flow-ref doc:name="Copy_of_Flow-ref to getUniversal" doc:id="d825ae11-c6a6-4bfb-95f2-becc75849035" name="get:\patents:space-events-demo-config" />
-				<ee:transform doc:name="Copy_of_Set Expected Result" doc:id="0a19def7-81d0-4369-b117-3d0492b9146e">
+				<flow-ref doc:name="Flow-ref to getUniversal" doc:id="d825ae11-c6a6-4bfb-95f2-becc75849035" name="get:\patents:space-events-demo-config" />
+				<ee:transform doc:name="Set Expected Result" doc:id="0a19def7-81d0-4369-b117-3d0492b9146e">
 					<ee:message />
 					<ee:variables>
 						<ee:set-variable variableName="expected"><![CDATA[%dw 2.0
