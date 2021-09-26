@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>1137b0df-1393-420a-a78b-d28129e18a16</groupId>
-	<artifactId>space-eventsand_patents-demo-app</artifactId>
+	<artifactId>space-events_and_patents-demo-app</artifactId>
 	<version>1.0.0</version>
 	<packaging>mule-application</packaging>
 

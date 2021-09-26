@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<munit:config name="slack-test-suite.xml" />
+	<http:request-config name="forTest" doc:name="HTTP Request configuration" doc:id="e1be92d1-37f3-43fa-a862-b24bd6afda02" >
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>	
+	<munit:test name="slack-test-suite-slackEventsListTest-text-notempty" doc:id="3cd313d2-c871-4281-a729-201dce206a96" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="7412a2c5-fcc6-4ce6-af4f-69f09de96b22" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="urlencodedRequest" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	text:"limit=3 offset=0 type=Press_Event"
+}]]></ee:set-variable>
+					<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					<ee:set-variable variableName="deployedResponse" ><![CDATA[%dw 2.0
+output application/json
+---
+[
+    {
+        "id": 77,
+        "slug": "2017-nasa-astronaut-class-graduation-ceremony",
+        "name": "2017 NASA Astronaut class graduation ceremony",
+        "date": "2020-01-10T15:30:00Z",
+        "location": "NASA's Johnson Space Center, Houston, TX, USA",
+        "type": "Press Event",
+        "description": "NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency’s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.",
+        "url": "https://lldev.thespacedevs.com/2.2.0/event/77/",
+        "news_url": "https://www.nasa.gov/press-release/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions",
+        "video_url": "https://www.youtube.com/watch?v=xo58EoT987M",
+        "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg"
+    },
+    {
+        "id": 60,
+        "slug": "70th-international-astronautical-congress",
+        "name": "70th International Astronautical Congress",
+        "date": "2019-10-25T21:00:00Z",
+        "location": "Washington D.C, United States",
+        "type": "Press Event",
+        "description": "The International Astronautical Congress is a yearly conference where key figures in the space industry meet and showcase/discuss events in the spaceflight industry.\r\n\r\nThe event lasts starts on 21st October and lasts a week. Some of the panels will be live streamed for free on NASA TV.",
+        "url": "https://lldev.thespacedevs.com/2.2.0/event/60/",
+        "news_url": "https://www.iac2019.org/",
+        "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+        "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/70th2520international2520astronautical2520congress_image_20191019002059.png"
+    },
+    {
+        "id": 198,
+        "slug": "8th-meeting-of-the-national-space-council",
+        "name": "8th meeting of the National Space Council",
+        "date": "2020-12-09T17:30:00Z",
+        "location": "Kennedy Space Center",
+        "type": "Press Event",
+        "description": "US Vice President Mike Pence will convene the 8th meeting of the National Space Council at NASA's Kennedy Space Center on December 9 at 12:30 p.m. ET. \r\n\r\nThe meeting will be livestreamed on NASA TV.",
+        "url": "https://lldev.thespacedevs.com/2.2.0/event/198/",
+        "news_url": null,
+        "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+        "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/8th_meeting_of__image_20201201090808.jpeg"
+    }
+]]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="deployed GET /events" doc:id="e78486c3-e2bb-4935-af65-ab1c6fafabc2" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="a4ed73f9-d1a0-445c-b84a-0768b130d0d7" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.deployedResponse]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="webhook POST" doc:id="5795b5ee-dee7-44cc-a4e0-a73b7c1a813f" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6234d9dd-77a5-4b37-bbd7-65453e10a257" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:attributes value="#[statusCode:vars.httpStatus]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<set-payload value="#[vars.urlencodedRequest]" doc:name="Set Payload" doc:id="b4524a34-48e1-4eab-af5c-2f999a8de9fc" />
+			<flow-ref doc:name="slackEventsList" doc:id="446f5797-5174-4e9b-99a2-738daa87b6df" name="slackEventsList"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="1b83dcdc-d611-458c-a1ca-5c552ca76db6" is="#[MunitTools::equalTo(200)]" expression="#[attributes.statusCode]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="slack-test-suite-slackEventsListTest-text-emty" doc:id="535de2a4-7204-4c71-9e44-138edf5a4dd0" description="Test">
+			<munit:behavior>
+				<ee:transform doc:name="Transform Message" doc:id="96331ba6-9322-471a-b1cb-9518b6998c8e">
+					<ee:message />
+					<ee:variables>
+						<ee:set-variable variableName="urlencodedRequest"><![CDATA[%dw 2.0
+output application/json
+---
+{
+	text:""
+}]]></ee:set-variable>
+						<ee:set-variable variableName="httpStatus"><![CDATA[200]]></ee:set-variable>
+						<ee:set-variable variableName="deployedResponse"><![CDATA[%dw 2.0
+output application/json
+---
+[
+    {
+        "id": 77,
+        "slug": "2017-nasa-astronaut-class-graduation-ceremony",
+        "name": "2017 NASA Astronaut class graduation ceremony",
+        "date": "2020-01-10T15:30:00Z",
+        "location": "NASA's Johnson Space Center, Houston, TX, USA",
+        "type": "Press Event",
+        "description": "NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency’s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.",
+        "url": "https://lldev.thespacedevs.com/2.2.0/event/77/",
+        "news_url": "https://www.nasa.gov/press-release/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions",
+        "video_url": "https://www.youtube.com/watch?v=xo58EoT987M",
+        "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg"
+    },
+    {
+        "id": 60,
+        "slug": "70th-international-astronautical-congress",
+        "name": "70th International Astronautical Congress",
+        "date": "2019-10-25T21:00:00Z",
+        "location": "Washington D.C, United States",
+        "type": "Press Event",
+        "description": "The International Astronautical Congress is a yearly conference where key figures in the space industry meet and showcase/discuss events in the spaceflight industry.\r\n\r\nThe event lasts starts on 21st October and lasts a week. Some of the panels will be live streamed for free on NASA TV.",
+        "url": "https://lldev.thespacedevs.com/2.2.0/event/60/",
+        "news_url": "https://www.iac2019.org/",
+        "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+        "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/70th2520international2520astronautical2520congress_image_20191019002059.png"
+    },
+    {
+        "id": 198,
+        "slug": "8th-meeting-of-the-national-space-council",
+        "name": "8th meeting of the National Space Council",
+        "date": "2020-12-09T17:30:00Z",
+        "location": "Kennedy Space Center",
+        "type": "Press Event",
+        "description": "US Vice President Mike Pence will convene the 8th meeting of the National Space Council at NASA's Kennedy Space Center on December 9 at 12:30 p.m. ET. \r\n\r\nThe meeting will be livestreamed on NASA TV.",
+        "url": "https://lldev.thespacedevs.com/2.2.0/event/198/",
+        "news_url": null,
+        "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+        "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/8th_meeting_of__image_20201201090808.jpeg"
+    }
+]]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<munit-tools:mock-when doc:name="deployed GET /events" doc:id="d51eee9f-e27a-496f-bb23-425dd8f703c8" processor="http:request">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="a4ed73f9-d1a0-445c-b84a-0768b130d0d7" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+					<munit-tools:then-return>
+						<munit-tools:payload value="#[vars.deployedResponse]" mediaType="application/json" />
+					</munit-tools:then-return>
+				</munit-tools:mock-when>
+				<munit-tools:mock-when doc:name="webhook POST" doc:id="0f9f6663-d2f0-4515-a851-4bdd18ae66cd" processor="http:request">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="6234d9dd-77a5-4b37-bbd7-65453e10a257" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+					<munit-tools:then-return>
+						<munit-tools:attributes value="#[statusCode:vars.httpStatus]" />
+					</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<set-payload value="#[vars.urlencodedRequest]" doc:name="Set Payload" doc:id="c75b7285-0a71-4b1a-b1ba-fbdab1a370f2" />
+				<flow-ref doc:name="slackEventsList" doc:id="271e4e9d-2671-40c0-82c6-876959ea8ddd" name="slackEventsList" />
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-that doc:name="Assert that" doc:id="d904d789-2a27-476f-9f0f-3142c94777a6" is="#[MunitTools::equalTo(200)]" expression="#[attributes.statusCode]" />
+			</munit:validation>
+		</munit:test>
+	<munit:test name="slack-test-suite-slackUpcomingTest-text-notempty" doc:id="68615b95-1623-4388-a323-1e626e377458" description="Test">
+			<munit:behavior>
+				<ee:transform doc:name="Transform Message" doc:id="f4f4402a-611b-4274-8fa7-98718d5153b3">
+					<ee:message />
+					<ee:variables>
+						<ee:set-variable variableName="urlencodedRequest"><![CDATA[%dw 2.0
+output application/json
+---
+{
+	text:"limit=3 offset=0 type=Press_Event"
+}]]></ee:set-variable>
+						<ee:set-variable variableName="httpStatus"><![CDATA[200]]></ee:set-variable>
+						<ee:set-variable variableName="deployedResponse"><![CDATA[%dw 2.0
+output application/json
+---
+[
+    {
+        "id": 77,
+        "slug": "2017-nasa-astronaut-class-graduation-ceremony",
+        "name": "2017 NASA Astronaut class graduation ceremony",
+        "date": "2020-01-10T15:30:00Z",
+        "location": "NASA's Johnson Space Center, Houston, TX, USA",
+        "type": "Press Event",
+        "description": "NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency’s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.",
+        "url": "https://lldev.thespacedevs.com/2.2.0/event/77/",
+        "news_url": "https://www.nasa.gov/press-release/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions",
+        "video_url": "https://www.youtube.com/watch?v=xo58EoT987M",
+        "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg"
+    },
+    {
+        "id": 60,
+        "slug": "70th-international-astronautical-congress",
+        "name": "70th International Astronautical Congress",
+        "date": "2019-10-25T21:00:00Z",
+        "location": "Washington D.C, United States",
+        "type": "Press Event",
+        "description": "The International Astronautical Congress is a yearly conference where key figures in the space industry meet and showcase/discuss events in the spaceflight industry.\r\n\r\nThe event lasts starts on 21st October and lasts a week. Some of the panels will be live streamed for free on NASA TV.",
+        "url": "https://lldev.thespacedevs.com/2.2.0/event/60/",
+        "news_url": "https://www.iac2019.org/",
+        "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+        "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/70th2520international2520astronautical2520congress_image_20191019002059.png"
+    },
+    {
+        "id": 198,
+        "slug": "8th-meeting-of-the-national-space-council",
+        "name": "8th meeting of the National Space Council",
+        "date": "2020-12-09T17:30:00Z",
+        "location": "Kennedy Space Center",
+        "type": "Press Event",
+        "description": "US Vice President Mike Pence will convene the 8th meeting of the National Space Council at NASA's Kennedy Space Center on December 9 at 12:30 p.m. ET. \r\n\r\nThe meeting will be livestreamed on NASA TV.",
+        "url": "https://lldev.thespacedevs.com/2.2.0/event/198/",
+        "news_url": null,
+        "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+        "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/8th_meeting_of__image_20201201090808.jpeg"
+    }
+]]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<munit-tools:mock-when doc:name="deployed GET /upcoming" doc:id="7fef215b-60ab-4786-9751-b848888641b8" processor="http:request">
+					<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="813c251e-bbbe-461d-b424-4015bb5b71fb" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+						<munit-tools:payload value="#[vars.deployedResponse]" mediaType="application/json" />
+					</munit-tools:then-return>
+				</munit-tools:mock-when>
+				<munit-tools:mock-when doc:name="webhook POST" doc:id="8e4997ae-831a-4cf4-ad15-8a63b3ceb8b7" processor="http:request">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="6234d9dd-77a5-4b37-bbd7-65453e10a257" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+					<munit-tools:then-return>
+						<munit-tools:attributes value="#[statusCode:vars.httpStatus]" />
+					</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<set-payload value="#[vars.urlencodedRequest]" doc:name="Set Payload" doc:id="3d00c21a-c483-47e8-8adf-a83fe54beff1" />
+				<flow-ref doc:name="slackUpcoming" doc:id="9a93283e-3833-4668-a06b-b67163b8f7cb" name="slackUpcoming" />
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-that doc:name="Assert that" doc:id="11f8df66-9dc4-4ba2-b1bf-f0b4fd4e66a9" is="#[MunitTools::equalTo(200)]" expression="#[attributes.statusCode]" />
+			</munit:validation>
+		</munit:test>
+	<munit:test name="slack-test-suite-slackUpcomingTest-text-empty" doc:id="fc2f1eba-1494-4b6d-9fe6-9aca59379b11" description="Test">
+			<munit:behavior>
+				<ee:transform doc:name="Transform Message" doc:id="f14c555d-5be1-4aa9-a149-dbf499fbec62">
+					<ee:message />
+					<ee:variables>
+						<ee:set-variable variableName="urlencodedRequest"><![CDATA[%dw 2.0
+output application/json
+---
+{
+	text:""
+}]]></ee:set-variable>
+						<ee:set-variable variableName="httpStatus"><![CDATA[200]]></ee:set-variable>
+						<ee:set-variable variableName="deployedResponse"><![CDATA[%dw 2.0
+output application/json
+---
+[
+    {
+        "id": 77,
+        "slug": "2017-nasa-astronaut-class-graduation-ceremony",
+        "name": "2017 NASA Astronaut class graduation ceremony",
+        "date": "2020-01-10T15:30:00Z",
+        "location": "NASA's Johnson Space Center, Houston, TX, USA",
+        "type": "Press Event",
+        "description": "NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency’s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.",
+        "url": "https://lldev.thespacedevs.com/2.2.0/event/77/",
+        "news_url": "https://www.nasa.gov/press-release/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions",
+        "video_url": "https://www.youtube.com/watch?v=xo58EoT987M",
+        "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg"
+    },
+    {
+        "id": 60,
+        "slug": "70th-international-astronautical-congress",
+        "name": "70th International Astronautical Congress",
+        "date": "2019-10-25T21:00:00Z",
+        "location": "Washington D.C, United States",
+        "type": "Press Event",
+        "description": "The International Astronautical Congress is a yearly conference where key figures in the space industry meet and showcase/discuss events in the spaceflight industry.\r\n\r\nThe event lasts starts on 21st October and lasts a week. Some of the panels will be live streamed for free on NASA TV.",
+        "url": "https://lldev.thespacedevs.com/2.2.0/event/60/",
+        "news_url": "https://www.iac2019.org/",
+        "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+        "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/70th2520international2520astronautical2520congress_image_20191019002059.png"
+    },
+    {
+        "id": 198,
+        "slug": "8th-meeting-of-the-national-space-council",
+        "name": "8th meeting of the National Space Council",
+        "date": "2020-12-09T17:30:00Z",
+        "location": "Kennedy Space Center",
+        "type": "Press Event",
+        "description": "US Vice President Mike Pence will convene the 8th meeting of the National Space Council at NASA's Kennedy Space Center on December 9 at 12:30 p.m. ET. \r\n\r\nThe meeting will be livestreamed on NASA TV.",
+        "url": "https://lldev.thespacedevs.com/2.2.0/event/198/",
+        "news_url": null,
+        "video_url": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+        "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/8th_meeting_of__image_20201201090808.jpeg"
+    }
+]]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<munit-tools:mock-when doc:name="deployed GET /upcoming" doc:id="f74b0558-2ec7-4d07-aae6-4a32c7578f45" processor="http:request">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="813c251e-bbbe-461d-b424-4015bb5b71fb" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+					<munit-tools:then-return>
+						<munit-tools:payload value="#[vars.deployedResponse]" mediaType="application/json" />
+					</munit-tools:then-return>
+				</munit-tools:mock-when>
+				<munit-tools:mock-when doc:name="webhook POST" doc:id="ad936f13-e983-4256-b32c-b06e90ae39fa" processor="http:request">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="6234d9dd-77a5-4b37-bbd7-65453e10a257" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+					<munit-tools:then-return>
+						<munit-tools:attributes value="#[statusCode:vars.httpStatus]" />
+					</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<set-payload value="#[vars.urlencodedRequest]" doc:name="Set Payload" doc:id="f7ba1f06-ad4a-414d-a37f-e8383134f1a8" />
+				<flow-ref doc:name="slackUpcoming" doc:id="f1ce3fbe-6be8-4a39-a3c0-85bc828509b0" name="slackUpcoming" />
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-that doc:name="Assert that" doc:id="04e6fa03-2dcd-48b8-ac54-5b1412c775fe" is="#[MunitTools::equalTo(200)]" expression="#[attributes.statusCode]" />
+			</munit:validation>
+		</munit:test>
+	<munit:test name="slack-test-suite-slackInfoTest" doc:id="aefe6aa0-87ea-4221-b157-092c8b0321a2" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="80ecc084-d238-4186-a6d4-1807bf5c7a26" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="eventsCount" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	count: "5"
+}]]></ee:set-variable>
+					<ee:set-variable variableName="upcomingCount" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	count: "10"
+}]]></ee:set-variable>
+					<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="e1189a35-b487-4b03-817c-8f24c37f66d2" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="8eb7c373-b24e-4f03-b472-e6873c5a1bce" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.eventsCount]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="ea1f586d-fd03-48f2-b45b-ef185ba08713" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d1e02416-557c-4aa0-82ca-2286122671b8" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.upcomingCount]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="webhook POST" doc:id="c67eb31a-f14c-4068-88e0-0a46fc5bc663" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6234d9dd-77a5-4b37-bbd7-65453e10a257" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:attributes value="#[statusCode:vars.httpStatus]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to slackInfo" doc:id="5e290f3b-890f-460a-80d3-52f1cc2962f4" name="slackInfo"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="a922c445-2551-454f-aef9-ea2746f04604" is="#[MunitTools::equalTo(200)]" expression="#[attributes.statusCode]" />
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

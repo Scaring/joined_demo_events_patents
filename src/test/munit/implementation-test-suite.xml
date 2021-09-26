@@ -108,6 +108,7 @@ output application/json
 [
     {
         "id": 77,
+        "slug": "2017-nasa-astronaut-class-graduation-ceremony",
         "name": "2017 NASA Astronaut class graduation ceremony",
         "date": "2020-01-10T15:30:00Z",
         "location": "NASA's Johnson Space Center, Houston, TX, USA",
@@ -120,6 +121,7 @@ output application/json
     },
     {
         "id": 60,
+        "slug": "70th-international-astronautical-congress",
         "name": "70th International Astronautical Congress",
         "date": "2019-10-25T21:00:00Z",
         "location": "Washington D.C, United States",
@@ -132,6 +134,7 @@ output application/json
     },
     {
         "id": 198,
+        "slug": "8th-meeting-of-the-national-space-council",
         "name": "8th meeting of the National Space Council",
         "date": "2020-12-09T17:30:00Z",
         "location": "Kennedy Space Center",
@@ -252,6 +255,7 @@ output application/json
 [
         {
             "id": 77,
+            "slug": "2017-nasa-astronaut-class-graduation-ceremony",
             "name": "2017 NASA Astronaut class graduation ceremony",
             "date": "2020-01-10T15:30:00Z",
             "location": "NASA's Johnson Space Center, Houston, TX, USA",
@@ -264,6 +268,7 @@ output application/json
         },
         {
             "id": 60,
+            "slug": "70th-international-astronautical-congress",
             "name": "70th International Astronautical Congress",
             "date": "2019-10-25T21:00:00Z",
             "location": "Washington D.C, United States",
@@ -276,6 +281,7 @@ output application/json
         },
         {
             "id": 198,
+            "slug": "8th-meeting-of-the-national-space-council",
             "name": "8th meeting of the National Space Council",
             "date": "2020-12-09T17:30:00Z",
             "location": "Kennedy Space Center",
@@ -396,6 +402,7 @@ output application/json
 [
         {
             "id": 77,
+            "slug": "2017-nasa-astronaut-class-graduation-ceremony",
             "name": "2017 NASA Astronaut class graduation ceremony",
             "date": "2020-01-10T15:30:00Z",
             "location": "NASA's Johnson Space Center, Houston, TX, USA",
@@ -408,6 +415,7 @@ output application/json
         },
         {
             "id": 198,
+            "slug": "8th-meeting-of-the-national-space-council",
             "name": "8th meeting of the National Space Council",
             "date": "2020-12-09T17:30:00Z",
             "location": "Kennedy Space Center",
@@ -526,6 +534,7 @@ output application/json
 [
         {
             "id": 77,
+            "slug": "2017-nasa-astronaut-class-graduation-ceremony",
             "name": "2017 NASA Astronaut class graduation ceremony",
             "date": "2020-01-10T15:30:00Z",
             "location": "NASA's Johnson Space Center, Houston, TX, USA",
@@ -1045,6 +1054,7 @@ output application/json
 [
     {
         "id": 275,
+        "slug": "crs-23-dragon-docking",
         "name": "CRS-23 Dragon Docking",
         "date": "2021-08-19T00:00:00Z",
         "location": "International Space Station",
@@ -1057,6 +1067,7 @@ output application/json
     },
     {
         "id": 276,
+        "slug": "crs-23-dragon-undocking",
         "name": "CRS-23 Dragon Undocking",
         "date": "2021-09-12T00:00:00Z",
         "location": "International Space Station",
@@ -1140,9 +1151,9 @@ output application/json
 {
     "message": "We found too many records for your query, try one of the next!",
     "variants": [
-        "Apollo 11th 50th Anniversary - Lunar Landing",
-        "Chandrayaan-2 Lunar Landing",
-        "Chang'e 5 Lunar Landing"
+    	"Chang'e 5 Lunar Landing",
+    	"Chandrayaan-2 Lunar Landing",
+        "Apollo 11th 50th Anniversary - Lunar Landing", 
     ]
 }]]></ee:set-variable>
 				</ee:variables>
@@ -1220,6 +1231,7 @@ output application/json
 ---
 {
     "id": 25,
+    "slug": "apollo-11th-50th-anniversary-lunar-landing-25",
     "name": "Apollo 11th 50th Anniversary - Lunar Landing",
     "date": "2019-07-20T20:17:00Z",
     "picture_of_the_day": {
@@ -1294,6 +1306,7 @@ output application/json
 ---
 {
     "id": 25,
+    "slug": "apollo-11th-50th-anniversary-lunar-landing-25",
     "name": "Apollo 11th 50th Anniversary - Lunar Landing",
     "date": "2219-07-20T20:17:00Z",
     "location": "Lunar Surface",
