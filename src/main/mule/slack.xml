@@ -374,7 +374,7 @@ output application/json
 			"elements": [
 				{
 					"type": "mrkdwn",
-					"text": "Use next *_slash comands_*:\n/info - common info and events count; \n/events limit=10 offset=0 type=Press_Event period=2020 (all are optional);\n/upcoming limit=10 offset=0 (all are optional)\n/event 2017 NASA Astronaut class graduation ceremony (event name required);\n/patents limit=10 offset=0 category=health_medicine_and_biotechnology research=ARC (all are optional);\n/patent NPO-50764-1 (patent code required).\n<https://github.com/Scaring/mule_demo_repo|Github api docs>"
+					"text": "Use next *_slash comands_*:\n/info - common info and events count; \n/events limit=10 offset=0 type=Press_Event period=2020 (all are optional);\n/upcoming limit=10 offset=0 (all are optional)\n/event 2017 NASA Astronaut class graduation ceremony (event name required);\n/patents limit=10 offset=0 category=health_medicine_and_biotechnology research=ARC (all are optional);\n/patent NPO-50764-1 (patent code required).\n<https://github.com/Scaring/joined_demo_events_patents|Github api docs>"
 				}
 			]
 		}
