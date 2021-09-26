@@ -22,5 +22,5 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	</http:request-config>	
 	<http:request-config name="nasa_patents" doc:name="HTTP Request configuration" doc:id="da711e40-08aa-4204-a93e-6edc4995bc85" basePath="/${nasa.patents.basepath}">
 	 	<http:request-connection host="${nasa.host}" protocol="${nasa.protocol}" />
-	</http:request-config>	
+	</http:request-config>
 </mule>

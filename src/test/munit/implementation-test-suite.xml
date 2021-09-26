@@ -89,9 +89,7 @@ output application/json
 			</ee:transform>
 			<munit-tools:mock-when doc:name="getSpaceEvents" doc:id="9e38bbe9-e41d-487b-9a3f-72d65fe4e856" processor="http:request">
 				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="GET /events" attributeName="doc:name" />
 					<munit-tools:with-attribute whereValue="91e6047d-a590-4879-97ee-94dec39ad916" attributeName="doc:id" />
-					<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
 					<munit-tools:payload value="#[vars.apiResponse]" mediaType="application/json" />
@@ -110,6 +108,7 @@ output application/json
 [
     {
         "id": 77,
+        "slug": "2017-nasa-astronaut-class-graduation-ceremony",
         "name": "2017 NASA Astronaut class graduation ceremony",
         "date": "2020-01-10T15:30:00Z",
         "location": "NASA's Johnson Space Center, Houston, TX, USA",
@@ -122,6 +121,7 @@ output application/json
     },
     {
         "id": 60,
+        "slug": "70th-international-astronautical-congress",
         "name": "70th International Astronautical Congress",
         "date": "2019-10-25T21:00:00Z",
         "location": "Washington D.C, United States",
@@ -134,6 +134,7 @@ output application/json
     },
     {
         "id": 198,
+        "slug": "8th-meeting-of-the-national-space-council",
         "name": "8th meeting of the National Space Council",
         "date": "2020-12-09T17:30:00Z",
         "location": "Kennedy Space Center",
@@ -254,6 +255,7 @@ output application/json
 [
         {
             "id": 77,
+            "slug": "2017-nasa-astronaut-class-graduation-ceremony",
             "name": "2017 NASA Astronaut class graduation ceremony",
             "date": "2020-01-10T15:30:00Z",
             "location": "NASA's Johnson Space Center, Houston, TX, USA",
@@ -266,6 +268,7 @@ output application/json
         },
         {
             "id": 60,
+            "slug": "70th-international-astronautical-congress",
             "name": "70th International Astronautical Congress",
             "date": "2019-10-25T21:00:00Z",
             "location": "Washington D.C, United States",
@@ -278,6 +281,7 @@ output application/json
         },
         {
             "id": 198,
+            "slug": "8th-meeting-of-the-national-space-council",
             "name": "8th meeting of the National Space Council",
             "date": "2020-12-09T17:30:00Z",
             "location": "Kennedy Space Center",
@@ -398,6 +402,7 @@ output application/json
 [
         {
             "id": 77,
+            "slug": "2017-nasa-astronaut-class-graduation-ceremony",
             "name": "2017 NASA Astronaut class graduation ceremony",
             "date": "2020-01-10T15:30:00Z",
             "location": "NASA's Johnson Space Center, Houston, TX, USA",
@@ -410,6 +415,7 @@ output application/json
         },
         {
             "id": 198,
+            "slug": "8th-meeting-of-the-national-space-council",
             "name": "8th meeting of the National Space Council",
             "date": "2020-12-09T17:30:00Z",
             "location": "Kennedy Space Center",
@@ -506,12 +512,10 @@ output application/json
 					</ee:variables>
 				</ee:transform>
 				<munit-tools:mock-when doc:name="getSpaceEvents" doc:id="fb1810f4-1071-4739-9c6e-05c60617a64f" processor="http:request">
-					<munit-tools:with-attributes>
-						<munit-tools:with-attribute whereValue="GET /events" attributeName="doc:name" />
-						<munit-tools:with-attribute whereValue="91e6047d-a590-4879-97ee-94dec39ad916" attributeName="doc:id" />
-						<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
-					</munit-tools:with-attributes>
-					<munit-tools:then-return>
+					<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="91e6047d-a590-4879-97ee-94dec39ad916" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
 						<munit-tools:payload value="#[vars.apiResponse]" mediaType="application/json" />
 					</munit-tools:then-return>
 				</munit-tools:mock-when>
@@ -530,6 +534,7 @@ output application/json
 [
         {
             "id": 77,
+            "slug": "2017-nasa-astronaut-class-graduation-ceremony",
             "name": "2017 NASA Astronaut class graduation ceremony",
             "date": "2020-01-10T15:30:00Z",
             "location": "NASA's Johnson Space Center, Houston, TX, USA",
@@ -1049,6 +1054,7 @@ output application/json
 [
     {
         "id": 275,
+        "slug": "crs-23-dragon-docking",
         "name": "CRS-23 Dragon Docking",
         "date": "2021-08-19T00:00:00Z",
         "location": "International Space Station",
@@ -1061,6 +1067,7 @@ output application/json
     },
     {
         "id": 276,
+        "slug": "crs-23-dragon-undocking",
         "name": "CRS-23 Dragon Undocking",
         "date": "2021-09-12T00:00:00Z",
         "location": "International Space Station",
@@ -1144,9 +1151,9 @@ output application/json
 {
     "message": "We found too many records for your query, try one of the next!",
     "variants": [
-        "Apollo 11th 50th Anniversary - Lunar Landing",
-        "Chandrayaan-2 Lunar Landing",
-        "Chang'e 5 Lunar Landing"
+    	"Chang'e 5 Lunar Landing",
+    	"Chandrayaan-2 Lunar Landing",
+        "Apollo 11th 50th Anniversary - Lunar Landing", 
     ]
 }]]></ee:set-variable>
 				</ee:variables>
@@ -1165,7 +1172,8 @@ output application/json
 output application/json
 ---
 {
-    "hdurl": "https://apod.nasa.gov/apod/image/1907/a11pan1040226lftsm.jpg",
+    "url": "https://apod.nasa.gov/apod/image/1907/a11pan1040226lftsm.jpg",
+    "title": "Nacreous Clouds over Sweden",
     "explanation": "Have you seen a panorama from another world lately? Assembled from high-resolution scans of the original film frames, this one sweeps across the magnificent desolation of the Apollo 11 landing site on the Moon's Sea of Tranquility. The images were taken by Neil Armstrong looking out his window of the Eagle Lunar Module fifty years ago, shortly after the July 20, 1969 landing. The frame at the far left (AS11-37-5449) is the first picture taken by a person on another world. Toward the south, thruster nozzles can be seen in the foreground on the left, while at the right, the shadow of the Eagle is visible to the west. For scale, the large, shallow crater on the right has a diameter of about 12 meters. Frames taken from the Lunar Module windows about an hour and a half after landing, before walking on the lunar surface, were intended to initially document the landing site in case an early departure was necessary."
 }]]></ee:set-variable>
 					<ee:set-variable variableName="eventMock" ><![CDATA[%dw 2.0
@@ -1224,9 +1232,11 @@ output application/json
 ---
 {
     "id": 25,
+    "slug": "apollo-11th-50th-anniversary-lunar-landing-25",
     "name": "Apollo 11th 50th Anniversary - Lunar Landing",
     "date": "2019-07-20T20:17:00Z",
     "picture_of_the_day": {
+    	"title": "Nacreous Clouds over Sweden",
         "hdurl": "https://apod.nasa.gov/apod/image/1907/a11pan1040226lftsm.jpg",
         "explanation": "Have you seen a panorama from another world lately? Assembled from high-resolution scans of the original film frames, this one sweeps across the magnificent desolation of the Apollo 11 landing site on the Moon's Sea of Tranquility. The images were taken by Neil Armstrong looking out his window of the Eagle Lunar Module fifty years ago, shortly after the July 20, 1969 landing. The frame at the far left (AS11-37-5449) is the first picture taken by a person on another world. Toward the south, thruster nozzles can be seen in the foreground on the left, while at the right, the shadow of the Eagle is visible to the west. For scale, the large, shallow crater on the right has a diameter of about 12 meters. Frames taken from the Lunar Module windows about an hour and a half after landing, before walking on the lunar surface, were intended to initially document the landing site in case an early departure was necessary."
     },
@@ -1298,6 +1308,7 @@ output application/json
 ---
 {
     "id": 25,
+    "slug": "apollo-11th-50th-anniversary-lunar-landing-25",
     "name": "Apollo 11th 50th Anniversary - Lunar Landing",
     "date": "2219-07-20T20:17:00Z",
     "location": "Lunar Surface",

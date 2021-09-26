@@ -79,8 +79,19 @@ else
 		<validation:is-true doc:name="Validate count is not 0" doc:id="eaf58ff7-5a19-4b7d-b3a1-d5c2f78be63e" expression="#[vars.found != 0]" message="${validate.error_message_notFound}">
 			<error-mapping sourceType="VALIDATION:INVALID_BOOLEAN" targetType="APP:EVENTS_NOT_FOUND" />
 		</validation:is-true>
+		<logger level="INFO" doc:name="payload" doc:id="2dd9edde-1ac3-40d7-8d09-74d331db6e6c" message="#[payload]"/>
+		<ee:transform doc:name="sort results" doc:id="a4cd5b70-3ef5-4bd2-aeb8-85f1580c2f66" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	results: payload.results orderBy sizeOf($.name)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 		<choice doc:name="Choice" doc:id="f53fee7d-9d53-499b-aaa4-6ed3cf140a35" >
-			<when expression="#[vars.found &gt; 1]">
+			<when expression="#[vars.found &gt; 1 and payload.results[0].name != vars.name]">
 				<ee:transform doc:name="too many records" doc:id="45fc9888-c197-4b04-b587-1c10f683813f" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
@@ -104,12 +115,13 @@ output application/json
 ---
 {
 	id: payload.results[0].id,
-	name: payload.results[0].name,
+	slug: payload.results[0].slug,
+	name: payload.results[0].name replace "\\\"" with(""),
 	date: payload.results[0].date,
 	picture_of_the_day: null,
 	location: payload.results[0].location,
 	"type": payload.results[0]."type".name,
-	description: payload.results[0].description,
+	description: payload.results[0].description replace "\\\"" with(""),
 	url: payload.results[0].url,
 	news_url: payload.results[0].news_url,
 	video_url: payload.results[0].video_url,
@@ -137,10 +149,12 @@ output application/json
 ---
 {
 	id: vars.eventByName.id,
+	slug: vars.eventByName.slug,
 	name: vars.eventByName.name,
 	date: vars.eventByName.date,
 	picture_of_the_day: {
-		hdurl: payload.hdurl,
+		title: payload.title,
+		hdurl: payload.url,
 		explanation: payload.explanation
 	},
 	location: vars.eventByName.location,
@@ -162,6 +176,7 @@ output application/json
 ---
 {
 	id: vars.eventByName.id,
+	slug: vars.eventByName.slug,
 	name: vars.eventByName.name,
 	date: vars.eventByName.date,
 	location: vars.eventByName.location,
@@ -197,11 +212,12 @@ output application/json
 ---
 payload.results map ( result , indexOfResult ) -> {
 	id: result.id,
-	name: result.name,
+	slug: result.slug,
+	name: result.name replace "\\\"" with(""),
 	date: result.date,
 	location: result.location,
 	"type": result."type".name,
-	description: result.description,
+	description: result.description replace "\\\"" with(""),
 	url: result.url,
 	news_url: result.news_url,
 	video_url: result.video_url,
@@ -216,7 +232,7 @@ payload.results map ( result , indexOfResult ) -> {
 		<set-variable value='#[message.attributes.queryParams.research default ""]' doc:name="Set Research" doc:id="60f0e585-86f9-4699-9dc3-33d4ca1342be" variableName="research" />
 		<set-variable value='#[message.attributes.queryParams.category default ""]' doc:name="Set Category" doc:id="fe943d7f-4c36-4f98-96c4-a80b1f824247" variableName="category" />
 		<set-variable value='#[message.attributes.queryParams.name default ""]' doc:name="Set Name" doc:id="715d45da-bfae-4145-a9d2-2ef9d3db8cb7" variableName="name"/>
-		<flow-ref doc:name="ofset_set" doc:id="77cfd85c-57ed-4704-a295-2e1c425e9125" name="set-limit-and-offset"/>
+		<flow-ref doc:name="set-limit-and-offset" doc:id="77cfd85c-57ed-4704-a295-2e1c425e9125" name="set-limit-and-offset"/>
 		<http:request method="GET" doc:name="Get Data from NASA api" doc:id="6644905b-72be-455d-a326-0f18e6989633" config-ref="nasa_patents" path="/${nasa.patents.path}/">
 			<http:query-params ><![CDATA[#[output application/java
 ---

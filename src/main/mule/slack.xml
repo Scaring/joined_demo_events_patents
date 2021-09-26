@@ -5,24 +5,63 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<flow name="slackEventsList" doc:id="1f2ce57e-34da-4bb7-b00b-9682e60de7dd" >
-		<http:listener doc:name="POST /slack/events/" doc:id="346e6a0f-60b0-49c1-9625-4b74ebae8e6c" config-ref="space-events-demo-httpListenerConfig" path="/slack/events/" allowedMethods="POST"/>
-		<choice doc:name="Choice" doc:id="e9720415-c42c-4e04-8bc0-21da3539e04b" >
-			<when expression='#[payload.text != ""]'>
-				<ee:transform doc:name="urlencoded2dw" doc:id="28e0c828-a4f3-4b68-b692-96a355c5712c">
+	<sub-flow name="sendSlackMessage" doc:id="ece80fc3-2e41-47c8-b22f-b512553fdcd9" >
+		<http:request method="POST" doc:name="POST to slack" doc:id="6234d9dd-77a5-4b37-bbd7-65453e10a257" url="${slack.webhookurl}">
+			<error-mapping sourceType="HTTP:CONNECTIVITY" targetType="APP:SCACK_CONNECT_PROBLEM" />
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/json"
+}]]]></http:headers>
+		</http:request>
+	</sub-flow>
+	<sub-flow name="sandSlackListTransformed" doc:id="d35bb2ff-8a78-4fa3-bda9-6f38deda7de2" >
+		<ee:transform doc:name="slack list formated json" doc:id="c33d13aa-6fe0-4d53-a5a9-4af7d785f38e">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+		"blocks": payload map{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				(if ($.location != null) "text": "*" ++ $.name  replace "\"" with("") ++ " - " ++ $.date as DateTime as String {format:"KK:mm a, MMMM dd, uuuu"} default "" ++ "*\ntype: " ++ $."type" default "" ++ "\nlocation: " ++ $.location ++ "" else "text": "*" ++ $.name  replace "\"" with("") ++ " - " ++ $.date as DateTime as String {format:"KK:mm a, MMMM dd, uuuu"} default "" ++ "*\ntype: " ++ $."type" default "" ++ "\nlocation: No location!")
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": "Details",
+					"emoji": true
+				},
+				"value": $.name replace "\"" with(""),
+				"action_id": "button-action"
+			}
+		}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="payload" doc:id="27e1f900-3fa5-493f-ba07-86b5d0c7766f" message="#[payload]"/>
+		<flow-ref doc:name="sendSlackMessage" doc:id="c4e2ff09-ff2c-4079-ba16-8afb84cc8d22" name="sendSlackMessage"/>
+	</sub-flow>
+	<sub-flow name="get-slackmessage-text" doc:id="115d0bb1-1d9a-4916-8ee4-c6bfba04c9cc" >
+		<choice doc:name="Choice" doc:id="0f54f0e3-e9a0-48c1-9e6e-486e6739759f" >
+			<when expression='#[payload.text != ""]' >
+				<ee:transform doc:name="urlencoded2dw" doc:id="953dfa9f-52c4-4240-91c4-9eaa59f9a73e" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
 output application/dw
 var arr = payload.text splitBy(" ") map {
     (($ splitBy("="))[0]): ($ splitBy("="))[1]
 }
 ---
 arr reduce ((env, obj={}) -> obj ++ env)]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-				<ee:transform doc:name="dw2json" doc:id="275424cd-81c6-4e8b-860a-982894c8e982">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+					</ee:message>
+				</ee:transform>
+				<ee:transform doc:name="dw2json" doc:id="76e0956f-6f90-4de0-89c5-dc55d501565d" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
 payload mapObject ((value, key, index) -> 
@@ -30,84 +69,368 @@ payload mapObject ((value, key, index) ->
 		(if (key ~= "type") (key): value splitBy("_") joinBy(" ") else (key): value)
 	}
 )]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-				<logger level="INFO" doc:name="payload" doc:id="a91c1388-25e2-44b8-bf18-8f6a85c5203c" message="#[payload]" />
+					</ee:message>
+				</ee:transform>
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="payload.text" doc:id="08636155-711c-420c-947c-c8e54cba6d49" message="Text is not defined!"/>
+				<logger level="INFO" doc:name="Text is not defined!" doc:id="8b8c3a36-c7ac-4d06-a200-5dcf3315984a" message="Text is not defined!" />
 			</otherwise>
 		</choice>
+	</sub-flow>
+	<flow name="slackEventsList" doc:id="1f2ce57e-34da-4bb7-b00b-9682e60de7dd" >
+		<http:listener doc:name="POST /slack/events/" doc:id="346e6a0f-60b0-49c1-9625-4b74ebae8e6c" config-ref="space-events-demo-httpListenerConfig" path="/slack/events/" allowedMethods="POST"/>
+		<flow-ref doc:name="get-slackmessage-text" doc:id="1bd83e6c-9a7c-4e91-a420-f219a7c547fb" name="get-slackmessage-text"/>
 		<http:request method="GET" doc:name="GET /events" doc:id="a4ed73f9-d1a0-445c-b84a-0768b130d0d7" config-ref="deployed_app" path="/events">
 			<http:query-params ><![CDATA[#[%dw 2.0
 output application/json
 ---
 payload]]]></http:query-params>
 		</http:request>
-		<ee:transform doc:name="slack formated json" doc:id="c33d13aa-6fe0-4d53-a5a9-4af7d785f38e" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-		"blocks": payload map {
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": "*Event name*: " ++ $.name ++ "\n*Event type*: " ++ $."type" ++ "\n*Location*: " ++ $.location ++ "\n*Date*: " ++ $.date
-			}
-		}
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<http:request method="POST" doc:name="sand webhook message to slack" doc:id="6234d9dd-77a5-4b37-bbd7-65453e10a257" url="${slack.webhookurl}">
-			<http:headers><![CDATA[#[output application/java
----
-{
-	"Content-Type" : "application/json"
-}]]]></http:headers>
-		</http:request>
+		<flow-ref doc:name="sandSlackListTransformed" doc:id="e6189e2c-b3bc-4a3b-9011-1dbed1585a5b" name="sandSlackListTransformed"/>
 	</flow>
 	<flow name="slackSingleEvent" doc:id="c2294f73-7f99-4b8e-a251-3d1333e25bdd" >
 		<http:listener doc:name="POST /slack/event/" doc:id="eb3198f8-6097-4b8d-9fc9-ec3aab4cce18" config-ref="space-events-demo-httpListenerConfig" path="/slack/event/" allowedMethods="POST"/>
-		<logger level="INFO" doc:name="payload.text" doc:id="6068b4f0-2958-40a1-99d0-e0b2189b879c" message="#[payload.text]" />
-		<ee:transform doc:name="urlencoded2json" doc:id="f4562e9a-864f-48fa-b287-49d5faf24bf1" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<choice doc:name="Choice" doc:id="3d4978d7-63b8-4fac-8345-4c2a45e82d5e" >
+			<when expression="#[payload.text != null]">
+				<ee:transform doc:name="urlencoded2dw" doc:id="a8f19560-a71a-4580-ad41-b8f5341d86e9" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/dw
+---
+payload.text]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<ee:transform doc:name="Transform Message" doc:id="847ac240-fa0a-4880-9d1f-03b45d32678b" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
 {
-	((payload.text splitBy("="))[0]): (payload.text splitBy("="))[1]
-}
-]]></ee:set-payload>
+	name: payload replace "*" with("")
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="parse urlencoded" doc:id="853fdcef-b4ed-4bc0-85d9-3505c91b4b08">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/dw
+---
+payload.payload replace "\\" with ""]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="payload" doc:id="6f7590b3-e379-4011-90d6-8e8268c8d41f" message="#[payload]" />
-		<http:request method="GET" doc:name="GET /event" doc:id="53ce8f9c-2b6a-4cc9-b715-cbb215bafd05" config-ref="deployed_app" path="/event" >
-			<http:query-params ><![CDATA[#[payload]]]></http:query-params>
-		</http:request>
-	</flow>
-	<flow name="slackUpcoming" doc:id="91a798cf-103a-4689-8fe6-10e50faadb1f" >
-		<http:listener doc:name="POST /slack/upcoming/" doc:id="bf4c7653-038c-433a-a82a-2bbcafb096a3" config-ref="space-events-demo-httpListenerConfig" path="/slack/upcoming/"/>
-		<http:request method="GET" doc:name="GET /upcoming" doc:id="813c251e-bbbe-461d-b424-4015bb5b71fb" config-ref="deployed_app" path="/upcoming" >
-			<http:query-params ><![CDATA[#[output application/java
----
-{
-	"limit" : 50
-}]]]></http:query-params>
-		</http:request>
-		<ee:transform doc:name="Transform Message" doc:id="516de956-d427-4eba-b645-a81db9faefb5" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+				<ee:transform doc:name="read json" doc:id="93c906ba-a522-4f3b-b242-5386f73e34cb">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-payload map {
-	name: $.name,
-	"type": $."type",
-	date: $.date,
-	location: $.location
+read(payload, "application/json")]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<ee:transform doc:name="get name" doc:id="1c60bd50-1ebc-4023-8ed7-473c12e6b367">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	name: payload.actions[0].value replace "u2019" with("’") replace "u201c" with("“") replace "u201d" with("”")
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+			</otherwise>
+		</choice>
+		<http:request method="GET" doc:name="GET /event" doc:id="53ce8f9c-2b6a-4cc9-b715-cbb215bafd05" config-ref="deployed_app" path="/event">
+			<http:query-params><![CDATA[#[payload]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="generate slack message" doc:id="8a3a44fb-8622-46b6-8b9a-38d532c7ccf3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+type eventDate =  String {format:"KK:mm a, MMMM dd, uuuu"}
+---
+if(payload.date as DateTime as Date{format:"yyyy-MM-dd"} < now() as Date{format:"yyyy-MM-dd"}){
+	"blocks": [
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": payload.name
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": payload."type" ++ " - " ++ payload.date as DateTime as eventDate
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": payload.description default "No description"
+			}
+		},
+		{
+			"type": "image",
+			"title": {
+				"type": "plain_text",
+				"text": "image1",
+				"emoji": true
+			},
+			"image_url": payload.feature_image default "https://external-preview.redd.it/i2cgbX3XmbEg58oW0ioPBq2HZqO3g7DvJR6FW-3ROvU.jpg?width=640&crop=smart&auto=webp&s=c92e7c63b1856a8c5a6f92169e202915edad46ab",
+			"alt_text": "image1"
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "Picture of this day description:"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": payload.picture_of_the_day.explanation default "No description"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				(if (payload.picture_of_the_day.hdurl contains "youtube") "text": "<https://res.cloudinary.com/practicaldev/image/fetch/s--pEBYpD6l--/c_imagga_scale,f_auto,fl_progressive,h_900,q_auto,w_1600/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/7pwdyrxmy5b5ambgfuti.jpg|Default image>" else "text": "<" ++ payload.picture_of_the_day.hdurl ++ "|" ++ payload.picture_of_the_day.title ++ ">"),
+			}
+		},
+		{
+			"type": "divider"
+		}
+	]
+}
+else{
+	"blocks": [
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": payload.name
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": payload."type" ++ " - " ++ payload.date as DateTime as eventDate
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": payload.description default "No description"
+			}
+		},
+		{
+			"type": "image",
+			"title": {
+				"type": "plain_text",
+				"text": "image1",
+				"emoji": true
+			},
+			"image_url": payload.feature_image,
+			"alt_text": "image1"
+		},
+		{
+			"type": "divider"
+		}
+	]
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="payload" doc:id="959a0b32-2b5b-4be2-bab1-c5d6eb4ae931" message="#[payload]"/>
+		<flow-ref doc:name="sendSlackMessage" doc:id="8b20c674-2f0c-4853-88e6-8862d45bb85e" name="sendSlackMessage"/>
 	</flow>
+	<flow name="slackUpcoming" doc:id="91a798cf-103a-4689-8fe6-10e50faadb1f" >
+		<http:listener doc:name="POST /slack/upcoming/" doc:id="bf4c7653-038c-433a-a82a-2bbcafb096a3" config-ref="space-events-demo-httpListenerConfig" path="/slack/upcoming/"/>
+		<flow-ref doc:name="get-slackmessage-text" doc:id="9ecb7507-8e57-4671-9f98-d57644204f84" name="get-slackmessage-text"/>
+		<http:request method="GET" doc:name="GET /upcoming" doc:id="813c251e-bbbe-461d-b424-4015bb5b71fb" config-ref="deployed_app" path="/upcoming" >
+			<http:query-params ><![CDATA[#[payload]]]></http:query-params>
+		</http:request>
+		<flow-ref doc:name="sandSlackListTransformed" doc:id="03ebb6de-2fa1-4f30-86f4-0915676ba96a" name="sandSlackListTransformed"/>
+	</flow>
+	<flow name="slackInfo" doc:id="e12e9a8e-70b4-49ac-bd48-08d36295ec60" >
+		<http:listener doc:name="POST /slack/info" doc:id="99d1b4b0-8903-48cf-96ef-47246a6fab6a" config-ref="space-events-demo-httpListenerConfig" path="/slack/info/" />
+		<scatter-gather doc:name="Scatter-Gather" doc:id="eb306e2a-aef3-4e89-a333-a521cfa21476" >
+			<route >
+				<http:request method="GET" doc:name="GET /event" doc:id="8eb7c373-b24e-4f03-b472-e6873c5a1bce" config-ref="thespacedevs" path="/event">
+					<http:query-params><![CDATA[#[output application/java
+---
+{
+	"limit" : 1
+}]]]></http:query-params>
+				</http:request>
+				<ee:transform doc:name="Transform Message" doc:id="d72a2e2c-9f73-4288-a457-b7445e4c070b" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	total: payload.count
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</route>
+			<route >
+				<http:request method="GET" doc:name="GET /upcoming" doc:id="d1e02416-557c-4aa0-82ca-2286122671b8" config-ref="thespacedevs" path="/event/upcoming">
+			<http:query-params><![CDATA[#[output application/java
+---
+{
+	"limit" : 1
+}]]]></http:query-params>
+		</http:request>
+				<ee:transform doc:name="Transform Message" doc:id="1f6b9efd-5fc0-4332-af83-e390137d60e1" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	upcoming: payload.count
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="flatten payload" doc:id="f5e09966-03f5-45ac-927b-47fccbb899ab" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+flatten(payload..*payload) reduce ($$ ++ $)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="slack block message" doc:id="ca365256-a162-4d0c-8842-93af6f829a3f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"blocks": [
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "Here you can look for information about Space Events:",
+				"emoji": true
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "image",
+					"image_url": "https://avatarfiles.alphacoders.com/169/thumb-169513.png",
+					"alt_text": "cute cat"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "Total count (events): " ++ payload.total
+				}
+			]
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "image",
+					"image_url": "https://myvideogamelist.com/images/userpics/301f09a01athumb.jpg",
+					"alt_text": "cute cat"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "Planned (upcoming): " ++ payload.upcoming
+				}
+			]
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "Use next *_slash comands_*:\n/info - comon info and events count; \n/events limit=10 offset=0 type=Press_Event period=2020 (all are optional);\n/upcoming limit=10 offset=0 (all are optional)\n/event 2017 NASA Astronaut class graduation ceremony (event name required)."
+				}
+			]
+		}
+	]
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="sendSlackMessage" doc:id="2e45cdd4-4295-413b-bd8a-3173468f1d6a" name="sendSlackMessage"/>
+	</flow>
+	<flow name="slackPatents" doc:id="d91c6ed9-bb62-486e-9cda-ab8e249ca8fd" >
+		<http:listener doc:name="POST /slack/patents/" doc:id="299dd3b2-15d5-4941-bc74-8c272d1b158d" config-ref="space-events-demo-httpListenerConfig" path="/slack/patents/" allowedMethods="POST"/>
+		<logger level="INFO" doc:name="payload" doc:id="ccc92368-b857-4588-80e0-601eb456f7d6" message="#[payload]"/>
+		<flow-ref doc:name="get-slackmessage-text" doc:id="f8d1e7c9-97ca-4912-8cc8-94daed688072" name="get-slackmessage-text"/>
+		<flow-ref doc:name="getDeployedPatents" doc:id="c2152696-7343-4cf9-bc71-53fc2124a308" name="getDeployedPatents"/>
+		<logger level="INFO" doc:name="payload" doc:id="f67c0a1c-8ce2-4c0e-bd9a-48e88d1b9db0" message="#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="66b1dee0-ed72-4b44-9704-356f98760b38" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"blocks": payload map{
+		"type": "section",
+		"text": {
+			"type": "mrkdwn",
+			"text": "*" ++ $.patentName ++ "*\nCategory: "++ $.category ++"\nCode: "++ $.name ++"\nResearch Center: " ++ $.researchCenter ++ "\nDescription: " ++ (if(isEmpty($.Description)) "empty!" else $.Description), 
+		}
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="sendSlackMessage" doc:id="071f1ef1-e447-43b9-ab42-d2ac999e3f26" name="sendSlackMessage"/>
+	</flow>
+	<flow name="slackPatent" doc:id="5373a533-58de-4398-bde5-3a9739ea8dde" >
+		<http:listener doc:name="POST /slack/patent/" doc:id="5f8a34c9-69a5-4c7f-8ae2-1ffd2cd11bf8" config-ref="space-events-demo-httpListenerConfig" path="/slack/patent/" allowedMethods="POST" />
+		<logger level="INFO" doc:name="payload" doc:id="f76f23f9-730a-490c-b84d-071b821a48ec" message="#[payload]" />
+		<ee:transform doc:name="dw2json" doc:id="2eec5b29-445c-4ff2-bfca-1249795cec0d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	name: payload.text
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="payload" doc:id="1cfa616e-fb25-434b-b67f-7c36a601fff7" message="#[payload]" />
+		<flow-ref doc:name="getDeployedPatents" doc:id="72871f86-914e-415c-a2fd-c90ceef4a759" name="getDeployedPatents"/>
+		<logger level="INFO" doc:name="payload" doc:id="e1a674f0-b3b6-4b87-bc9d-81d56d776757" message="#[payload]" />
+		<ee:transform doc:name="Transform Message" doc:id="289e2c32-75d8-4259-9ae4-7be552b27e10" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"blocks": payload map{
+		"type": "section",
+		"text": {
+			"type": "mrkdwn",
+			"text": "*" ++ $.patentName ++ "*\nCategory: "++ $.category ++"\nCode: "++ $.name ++"\nResearch Center: " ++ $.researchCenter ++ "\nDescription: " ++ (if(isEmpty($.Description)) "empty!" else $.Description), 
+		}
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="sendSlackMessage" doc:id="a8c165cc-fd85-47fe-bfa8-91e91f0c65fe" name="sendSlackMessage" />
+	</flow>
+	<sub-flow name="getDeployedPatents" doc:id="28f926ba-f7c4-4444-b350-1f31222e2e19" >
+		<http:request method="GET" doc:name="GET /patents/" doc:id="bb057c84-4873-42b4-b7ff-31c24d7cb911" config-ref="deployed_app" path="/patents">
+			<http:query-params><![CDATA[#[payload]]]></http:query-params>
+		</http:request>
+	</sub-flow>
 </mule>
