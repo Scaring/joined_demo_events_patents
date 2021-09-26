@@ -232,7 +232,7 @@ payload.results map ( result , indexOfResult ) -> {
 		<set-variable value='#[message.attributes.queryParams.research default ""]' doc:name="Set Research" doc:id="60f0e585-86f9-4699-9dc3-33d4ca1342be" variableName="research" />
 		<set-variable value='#[message.attributes.queryParams.category default ""]' doc:name="Set Category" doc:id="fe943d7f-4c36-4f98-96c4-a80b1f824247" variableName="category" />
 		<set-variable value='#[message.attributes.queryParams.name default ""]' doc:name="Set Name" doc:id="715d45da-bfae-4145-a9d2-2ef9d3db8cb7" variableName="name"/>
-		<flow-ref doc:name="set-limit-and-offset" doc:id="77cfd85c-57ed-4704-a295-2e1c425e9125" name="set-limit-and-offset"/>
+		<flow-ref doc:name="set-limit-and-offset" doc:id="77cfd85c-57ed-4704-a295-2e1c425e9125" name="set-limit-and-offset" />
 		<http:request method="GET" doc:name="Get Data from NASA api" doc:id="6644905b-72be-455d-a326-0f18e6989633" config-ref="nasa_patents" path="/${nasa.patents.path}/">
 			<http:query-params ><![CDATA[#[output application/java
 ---
@@ -290,8 +290,10 @@ output application/json
 if(vars.name != "")
 	payload
 else
-	payload[vars.offset to (vars.offset + vars.limit - 1)]
-]]></ee:set-payload>
+	if(vars.limit - vars.offset >= sizeOf(payload))
+		payload[0 to (sizeOf(payload) - 1)]
+	else
+		payload[vars.offset to vars.limit - 1]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<validation:is-not-empty-collection doc:name="Is not empty collection" doc:id="b8a607ad-68a4-4cdb-9fd7-551c9261c6e4">

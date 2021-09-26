@@ -323,7 +323,7 @@ output application/json
 			"type": "header",
 			"text": {
 				"type": "plain_text",
-				"text": "Here you can look for information about Space Events:",
+				"text": "Here you can look for information about Space Events and NASA Patents:",
 				"emoji": true
 			}
 		},
@@ -359,8 +359,22 @@ output application/json
 			"type": "context",
 			"elements": [
 				{
+					"type": "image",
+					"image_url": "https://myvideogamelist.com/images/userpics/301f09a01athumb.jpg",
+					"alt_text": "cute cat"
+				},
+				{
 					"type": "mrkdwn",
-					"text": "Use next *_slash comands_*:\n/info - comon info and events count; \n/events limit=10 offset=0 type=Press_Event period=2020 (all are optional);\n/upcoming limit=10 offset=0 (all are optional)\n/event 2017 NASA Astronaut class graduation ceremony (event name required)."
+					"text": "Patents: 767"
+				}
+			]
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "Use next *_slash comands_*:\n/info - common info and events count; \n/events limit=10 offset=0 type=Press_Event period=2020 (all are optional);\n/upcoming limit=10 offset=0 (all are optional)\n/event 2017 NASA Astronaut class graduation ceremony (event name required);\n/patents limit=10 offset=0 category=health_medicine_and_biotechnology research=ARC (all are optional);\n/patent NPO-50764-1 (patent code required).\n<https://github.com/Scaring/mule_demo_repo|Github api docs>"
 				}
 			]
 		}
@@ -374,6 +388,19 @@ output application/json
 		<http:listener doc:name="POST /slack/patents/" doc:id="299dd3b2-15d5-4941-bc74-8c272d1b158d" config-ref="space-events-demo-httpListenerConfig" path="/slack/patents/" allowedMethods="POST"/>
 		<logger level="INFO" doc:name="payload" doc:id="ccc92368-b857-4588-80e0-601eb456f7d6" message="#[payload]"/>
 		<flow-ref doc:name="get-slackmessage-text" doc:id="f8d1e7c9-97ca-4912-8cc8-94daed688072" name="get-slackmessage-text"/>
+		<ee:transform doc:name="Transform Message" doc:id="c0ff0c41-6a16-4f3a-979f-19c9958b09c4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload mapObject ((value, key, index) -> 
+	{
+		(if (key ~= "category") (key): value splitBy("_") joinBy(" ") else (key): value)
+	}
+)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="payload" doc:id="48ae9457-492b-4c9b-ad1f-5df6ee1a6579" message="#[payload]"/>
 		<flow-ref doc:name="getDeployedPatents" doc:id="c2152696-7343-4cf9-bc71-53fc2124a308" name="getDeployedPatents"/>
 		<logger level="INFO" doc:name="payload" doc:id="f67c0a1c-8ce2-4c0e-bd9a-48e88d1b9db0" message="#[payload]"/>
 		<ee:transform doc:name="Transform Message" doc:id="66b1dee0-ed72-4b44-9704-356f98760b38" >
