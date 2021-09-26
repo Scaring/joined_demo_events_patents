@@ -135,15 +135,7 @@ output application/json
 ---
 {
 	name: payload.actions[0].value replace "u2019" with("’") replace "u201c" with("“") replace "u201d" with("”")
-}
-
-//{
-//	(if (payload.actions[0].value contains "u2019") 
-//		name: payload.actions[0].value replace "u2019" with("’") 
-//		else 
-//		name: payload.actions[0].value
-//	),
-//}]]></ee:set-payload>
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 			</otherwise>
@@ -211,7 +203,7 @@ if(payload.date as DateTime as Date{format:"yyyy-MM-dd"} < now() as Date{format:
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				(if (payload.picture_of_the_day.hdurl contains "youtube") "text": "https://res.cloudinary.com/practicaldev/image/fetch/s--pEBYpD6l--/c_imagga_scale,f_auto,fl_progressive,h_900,q_auto,w_1600/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/7pwdyrxmy5b5ambgfuti.jpg" else "text": payload.picture_of_the_day.hdurl),
+				(if (payload.picture_of_the_day.hdurl contains "youtube") "text": "<https://res.cloudinary.com/practicaldev/image/fetch/s--pEBYpD6l--/c_imagga_scale,f_auto,fl_progressive,h_900,q_auto,w_1600/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/7pwdyrxmy5b5ambgfuti.jpg|Default image>" else "text": "<" ++ payload.picture_of_the_day.hdurl ++ "|" ++ payload.picture_of_the_day.title ++ ">"),
 			}
 		},
 		{
@@ -380,10 +372,9 @@ output application/json
 	</flow>
 	<flow name="slackPatents" doc:id="d91c6ed9-bb62-486e-9cda-ab8e249ca8fd" >
 		<http:listener doc:name="POST /slack/patents/" doc:id="299dd3b2-15d5-4941-bc74-8c272d1b158d" config-ref="space-events-demo-httpListenerConfig" path="/slack/patents/" allowedMethods="POST"/>
+		<logger level="INFO" doc:name="payload" doc:id="ccc92368-b857-4588-80e0-601eb456f7d6" message="#[payload]"/>
 		<flow-ref doc:name="get-slackmessage-text" doc:id="f8d1e7c9-97ca-4912-8cc8-94daed688072" name="get-slackmessage-text"/>
-		<http:request method="GET" doc:name="GET /patents/" doc:id="722487d2-cca4-41f7-9729-07e4aaa563b8" config-ref="deployed_app" path="/patents">
-			<http:query-params ><![CDATA[#[payload]]]></http:query-params>
-		</http:request>
+		<flow-ref doc:name="getDeployedPatents" doc:id="c2152696-7343-4cf9-bc71-53fc2124a308" name="getDeployedPatents"/>
 		<logger level="INFO" doc:name="payload" doc:id="f67c0a1c-8ce2-4c0e-bd9a-48e88d1b9db0" message="#[payload]"/>
 		<ee:transform doc:name="Transform Message" doc:id="66b1dee0-ed72-4b44-9704-356f98760b38" >
 			<ee:message >
@@ -403,4 +394,43 @@ output application/json
 		</ee:transform>
 		<flow-ref doc:name="sendSlackMessage" doc:id="071f1ef1-e447-43b9-ab42-d2ac999e3f26" name="sendSlackMessage"/>
 	</flow>
+	<flow name="slackPatent" doc:id="5373a533-58de-4398-bde5-3a9739ea8dde" >
+		<http:listener doc:name="POST /slack/patent/" doc:id="5f8a34c9-69a5-4c7f-8ae2-1ffd2cd11bf8" config-ref="space-events-demo-httpListenerConfig" path="/slack/patent/" allowedMethods="POST" />
+		<logger level="INFO" doc:name="payload" doc:id="f76f23f9-730a-490c-b84d-071b821a48ec" message="#[payload]" />
+		<ee:transform doc:name="dw2json" doc:id="2eec5b29-445c-4ff2-bfca-1249795cec0d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	name: payload.text
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="payload" doc:id="1cfa616e-fb25-434b-b67f-7c36a601fff7" message="#[payload]" />
+		<flow-ref doc:name="getDeployedPatents" doc:id="72871f86-914e-415c-a2fd-c90ceef4a759" name="getDeployedPatents"/>
+		<logger level="INFO" doc:name="payload" doc:id="e1a674f0-b3b6-4b87-bc9d-81d56d776757" message="#[payload]" />
+		<ee:transform doc:name="Transform Message" doc:id="289e2c32-75d8-4259-9ae4-7be552b27e10" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"blocks": payload map{
+		"type": "section",
+		"text": {
+			"type": "mrkdwn",
+			"text": "*" ++ $.patentName ++ "*\nCategory: "++ $.category ++"\nCode: "++ $.name ++"\nResearch Center: " ++ $.researchCenter ++ "\nDescription: " ++ (if(isEmpty($.Description)) "empty!" else $.Description), 
+		}
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="sendSlackMessage" doc:id="a8c165cc-fd85-47fe-bfa8-91e91f0c65fe" name="sendSlackMessage" />
+	</flow>
+	<sub-flow name="getDeployedPatents" doc:id="28f926ba-f7c4-4444-b350-1f31222e2e19" >
+		<http:request method="GET" doc:name="GET /patents/" doc:id="bb057c84-4873-42b4-b7ff-31c24d7cb911" config-ref="deployed_app" path="/patents">
+			<http:query-params><![CDATA[#[payload]]]></http:query-params>
+		</http:request>
+	</sub-flow>
 </mule>

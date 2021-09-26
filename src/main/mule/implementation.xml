@@ -153,6 +153,7 @@ output application/json
 	name: vars.eventByName.name,
 	date: vars.eventByName.date,
 	picture_of_the_day: {
+		title: payload.title,
 		hdurl: payload.url,
 		explanation: payload.explanation
 	},

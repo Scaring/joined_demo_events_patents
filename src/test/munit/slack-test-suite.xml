@@ -399,6 +399,243 @@ output application/json
 			<munit-tools:assert-that doc:name="Assert that" doc:id="a922c445-2551-454f-aef9-ea2746f04604" is="#[MunitTools::equalTo(200)]" expression="#[attributes.statusCode]" />
 		</munit:validation>
 	</munit:test>
-
+	<munit:test name="slack-test-suite-slackPatentsTest" doc:id="7e67a095-fade-4891-94c7-dc9f314c2ea6" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="86de5aa8-24e9-4444-89c9-b472349be381" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="urlencodedRequest" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	text:""
+}]]></ee:set-variable>
+					<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					<ee:set-variable variableName="deployedResponse" ><![CDATA[%dw 2.0
+output application/json
+---
+[
+  {
+    "category": "electrical and electronics",
+    "name": "NPO-49937-3",
+    "patentName": "Advanced High-capacity Sulfur Cathode for Lithium-Sulfur Cells",
+    "Description": "",
+    "researchCenter": "JPL"
+  },
+  {
+    "category": "optics",
+    "name": "NPO-49915-2",
+    "patentName": "Improved Platform for Space Tunable Laser Spectrometer",
+    "Description": "",
+    "researchCenter": "JPL"
+  },
+  {
+    "category": "mechanical and fluid systems",
+    "name": "NPO-50439-1",
+    "patentName": "Novel MoS2- or WS2-filled hollow ZnS hexagonal nanotubes as solid lubricants and lubricant modifiers for space mechanisms",
+    "Description": "",
+    "researchCenter": "JPL"
+  }
+]]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="GET /patents" doc:id="07d7686d-c13b-4aec-a95e-4cd681dffe0a" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="722487d2-cca4-41f7-9729-07e4aaa563b8" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.deployedResponse]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="webhook POST" doc:id="b37977c7-1745-4ca0-800e-4c8e4095640b" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6234d9dd-77a5-4b37-bbd7-65453e10a257" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:attributes value="#[statusCode:vars.httpStatus]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<set-payload value="#[vars.urlencodedRequest]" doc:name="Set Payload" doc:id="e4f14663-5098-4c41-be60-ac33945068ac" />
+			<flow-ref doc:name="Flow-ref to slackPatents" doc:id="40007efa-fde7-4c50-b065-ff1f06b819fb" name="slackPatents"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="761cc655-d5d4-47dc-87ab-bf36ce194148" is="#[MunitTools::equalTo(200)]" expression="#[attributes.statusCode]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="slack-test-suite-slackPatentTest" doc:id="e8ed308a-0e9f-4e54-9937-1c62b748538f" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="4c80d700-b43e-47e8-9b3d-28cea156b59c" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="urlencodedRequest" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	text:"NPO-49937-3"
+}]]></ee:set-variable>
+					<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					<ee:set-variable variableName="deployedResponse" ><![CDATA[%dw 2.0
+output application/json
+---
+[
+  {
+    "category": "electrical and electronics",
+    "name": "NPO-49937-3",
+    "patentName": "Advanced High-capacity Sulfur Cathode for Lithium-Sulfur Cells",
+    "Description": "",
+    "researchCenter": "JPL"
+  }
+]]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="GET /patents" doc:id="f776ee96-3684-465a-8b0e-1310b9c5afa4" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="722487d2-cca4-41f7-9729-07e4aaa563b8" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.deployedResponse]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="webhook POST" doc:id="f58d1c3c-cffc-4c48-b25b-d69440a48d3f" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6234d9dd-77a5-4b37-bbd7-65453e10a257" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:attributes value="#[statusCode:vars.httpStatus]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<set-payload value="#[vars.urlencodedRequest]" doc:name="Set Payload" doc:id="966ff777-8d07-4cd2-ac19-537b9a690576" />
+			<flow-ref doc:name="Flow-ref to slackPatent" doc:id="5d31ea0f-41dd-4194-9dd7-4fab50f4da7b" name="slackPatent"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="20f407a9-7110-42ac-aeb1-96bf5530d27e" is="#[MunitTools::equalTo(200)]" expression="#[attributes.statusCode]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="slack-test-suite-slackSingleEventTest-queryText-name" doc:id="98114a3c-e098-4f89-b98b-e5895c3abab3" description="Test">
+	<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="ec0b58ed-b5c8-4c17-9a20-3047bc264695" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="urlencodedRequest" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	text:"2017 NASA Astronaut class graduation ceremony"
+}]]></ee:set-variable>
+					<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					<ee:set-variable variableName="deployedResponse" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "id": 77,
+    "slug": "2017-nasa-astronaut-class-graduation-ceremony",
+    "name": "2017 NASA Astronaut class graduation ceremony",
+    "date": "2020-01-10T15:30:00Z",
+    "picture_of_the_day": {
+        "title": "Nacreous Clouds over Sweden",
+        "hdurl": "https://apod.nasa.gov/apod/image/2001/NacreousPMHeden.jpg",
+        "explanation": "Vivid and lustrous, wafting iridescent waves of color filled this mountain and skyscape near Tanndalen, Sweden on January 3. Known as nacreous clouds or mother-of-pearl clouds, they are rare. This northern winter season they have been making unforgettable appearances at high latitudes, though. A type of polar stratospheric cloud, they form when unusually cold temperatures in the usually cloudless lower stratosphere form ice crystals. Still sunlit at altitudes of around 15 to 25 kilometers the clouds can diffract sunlight after sunset and before the dawn."
+    },
+    "location": "NASA's Johnson Space Center, Houston, TX, USA",
+    "type": "Press Event",
+    "description": "NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency’s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.",
+    "url": "https://lldev.thespacedevs.com/2.2.0/event/77/",
+    "news_url": "https://www.nasa.gov/press-release/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions",
+    "video_url": "https://www.youtube.com/watch?v=xo58EoT987M",
+    "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="deployed GET /event" doc:id="6b314486-ad17-44d1-bd91-372e6b5118c8" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="53ce8f9c-2b6a-4cc9-b715-cbb215bafd05" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.deployedResponse]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="webhook POST" doc:id="5424b9cb-7068-4e30-80b4-c82a159b3cd9" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6234d9dd-77a5-4b37-bbd7-65453e10a257" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:attributes value="#[statusCode:vars.httpStatus]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<set-payload value="#[vars.urlencodedRequest]" doc:name="Set Payload" doc:id="31c95f24-6651-41b4-9520-3e02cdf99c56" />
+			<flow-ref doc:name="Flow-ref to slackSingleEvent" doc:id="ae953cfe-b0ed-4d7d-b33d-b1866446b239" name="slackSingleEvent"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="97ff9048-b64e-412e-89fd-7bdd5e5d5a99" is="#[MunitTools::equalTo(200)]" expression="#[attributes.statusCode]"/>
+		</munit:validation>
+	</munit:test>
+<munit:test name="slack-test-suite-slackSingleEventTest-queryText-action-button-name" doc:id="6dfb604c-f8a1-43ae-ac2a-2084e05f634a" description="Test">
+	<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="5efb86a5-2796-41fc-8c82-62f7362b5049" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="urlencodedRequest" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	payload:"{\"actions\":[{\"value\":\"2017 NASA Astronaut class graduation ceremony\"}]}"
+}]]></ee:set-variable>
+					<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					<ee:set-variable variableName="deployedResponse" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "id": 77,
+    "slug": "2017-nasa-astronaut-class-graduation-ceremony",
+    "name": "2017 NASA Astronaut class graduation ceremony",
+    "date": "2020-01-10T15:30:00Z",
+    "picture_of_the_day": {
+        "title": "Nacreous Clouds over Sweden",
+        "hdurl": "https://apod.nasa.gov/apod/image/2001/NacreousPMHeden.jpg",
+        "explanation": "Vivid and lustrous, wafting iridescent waves of color filled this mountain and skyscape near Tanndalen, Sweden on January 3. Known as nacreous clouds or mother-of-pearl clouds, they are rare. This northern winter season they have been making unforgettable appearances at high latitudes, though. A type of polar stratospheric cloud, they form when unusually cold temperatures in the usually cloudless lower stratosphere form ice crystals. Still sunlit at altitudes of around 15 to 25 kilometers the clouds can diffract sunlight after sunset and before the dawn."
+    },
+    "location": "NASA's Johnson Space Center, Houston, TX, USA",
+    "type": "Press Event",
+    "description": "NASA will honor the first class of astronaut candidates to graduate under the Artemis program at 10:30 a.m. EST Friday, Jan. 10, at the agency’s Johnson Space Center in Houston. After completing more than two years of basic training, these candidates will become eligible for spaceflight, including assignments to the International Space Station, Artemis missions to the Moon, and ultimately, missions to Mars.",
+    "url": "https://lldev.thespacedevs.com/2.2.0/event/77/",
+    "news_url": "https://www.nasa.gov/press-release/nasa-s-astronaut-candidates-to-graduate-with-eye-on-artemis-missions",
+    "video_url": "https://www.youtube.com/watch?v=xo58EoT987M",
+    "feature_image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/event_images/20172520nasa2520astronaut2520class2520graduation2520ceremony_image_20191228100802.jpg"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="deployed GET /event" doc:id="9f56993e-7993-41d1-9b61-7bc1169b23cb" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="53ce8f9c-2b6a-4cc9-b715-cbb215bafd05" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.deployedResponse]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="webhook POST" doc:id="612b005b-7c64-4cca-878a-c8ffbf85d39f" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6234d9dd-77a5-4b37-bbd7-65453e10a257" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:attributes value="#[statusCode:vars.httpStatus]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<set-payload value="#[vars.urlencodedRequest]" doc:name="Set Payload" doc:id="6beb4250-f33e-4fc0-ae64-995db7a17f8a" />
+			<flow-ref doc:name="Flow-ref to slackSingleEvent" doc:id="72c4be63-2e00-4cc5-9480-068b86e19964" name="slackSingleEvent"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="05bb36b0-c42b-4a0a-9ed1-8cf8b89e13f9" is="#[MunitTools::equalTo(200)]" expression="#[attributes.statusCode]"/>
+		</munit:validation>
+	</munit:test>
 
 </mule>
