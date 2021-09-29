@@ -28,6 +28,29 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 			</otherwise>
 		</choice>
 	</sub-flow>
+	<sub-flow name="transform-events-list" doc:id="e9586bc6-9fc7-44bb-916c-099c82744279">
+		<ee:transform doc:name="of SpaceEvents list" doc:id="f30aa99c-222e-4ef7-bb05-99cbb7fee47c">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0 
+output application/json 
+---
+payload.results map ( result , indexOfResult ) -> {
+	id: result.id,
+	slug: result.slug,
+	name: result.name replace "\\\"" with(""),
+	date: result.date,
+	location: result.location,
+	"type": result."type".name,
+	description: result.description replace "\\\"" with(""),
+	url: result.url,
+	news_url: result.news_url,
+	video_url: result.video_url,
+	feature_image: result.feature_image
+}]]>
+				</ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
 	<sub-flow name="getSpaceEvents" doc:id="da5b96f9-add3-4729-b756-6b2f439d9022" >
 		<flow-ref doc:name="set-limit-and-offset" doc:id="7776b42e-174e-4fdf-8080-fd143a24300e" name="set-limit-and-offset"/>
 		<flow-ref doc:name="set-type-period-validate-period" doc:id="784a9c92-307e-40e5-a5d4-eb1b62c0b6c4" name="set-type-period-validate-period"/>
@@ -203,29 +226,6 @@ output application/json
 }]]]></http:query-params>
 		</http:request>
 		<flow-ref doc:name="transform-events-list" doc:id="0d918e2a-451d-4264-afba-89ad3f5989b9" name="transform-events-list" />
-	</sub-flow>
-	<sub-flow name="transform-events-list" doc:id="e9586bc6-9fc7-44bb-916c-099c82744279" >
-		<ee:transform doc:name="of SpaceEvents list" doc:id="f30aa99c-222e-4ef7-bb05-99cbb7fee47c">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0 
-output application/json 
----
-payload.results map ( result , indexOfResult ) -> {
-	id: result.id,
-	slug: result.slug,
-	name: result.name replace "\\\"" with(""),
-	date: result.date,
-	location: result.location,
-	"type": result."type".name,
-	description: result.description replace "\\\"" with(""),
-	url: result.url,
-	news_url: result.news_url,
-	video_url: result.video_url,
-	feature_image: result.feature_image
-}]]>
-				</ee:set-payload>
-			</ee:message>
-		</ee:transform>
 	</sub-flow>
 	<sub-flow name="getUniversal" doc:id="ac3e5e1a-f02b-426a-a5dd-942ab7f6a2f3">
 		<logger level="INFO" doc:name="Starting Logger" doc:id="5d0305f5-8c5d-4718-be17-c5f744252311" message="#[payload]" />

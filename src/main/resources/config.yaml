@@ -30,4 +30,12 @@ deployed:
   basepath: "api"
   
 slack:
-  webhookurl: ""
+  webhookurl: "https://hooks.slack.com/services/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"
+  
+ftp:
+  host: "ftpupload.net"
+  port: "21"
+  login: "b7_29890608"
+  password: "qwerty"
+  workDir: "/htdocs"
+  logsDir: "LOGApi/Log.txt"

@@ -12,7 +12,7 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-        <ee:transform doc:name="Attribute saver" doc:id="39730ef7-80b6-4d00-840e-1f015ab04eee">
+		<ee:transform doc:name="Attribute saver" doc:id="39730ef7-80b6-4d00-840e-1f015ab04eee">
 			<ee:message />
 			<ee:variables>
 				<ee:set-variable variableName="FInf"><![CDATA[attributes]]></ee:set-variable>

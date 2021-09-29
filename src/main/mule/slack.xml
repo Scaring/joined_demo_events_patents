@@ -5,6 +5,11 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="getDeployedPatents" doc:id="28f926ba-f7c4-4444-b350-1f31222e2e19">
+		<http:request method="GET" doc:name="GET /patents/" doc:id="bb057c84-4873-42b4-b7ff-31c24d7cb911" config-ref="deployed_app" path="/patents">
+			<http:query-params><![CDATA[#[payload]]]></http:query-params>
+		</http:request>
+	</sub-flow>
 	<sub-flow name="sendSlackMessage" doc:id="ece80fc3-2e41-47c8-b22f-b512553fdcd9" >
 		<http:request method="POST" doc:name="POST to slack" doc:id="6234d9dd-77a5-4b37-bbd7-65453e10a257" url="${slack.webhookurl}">
 			<error-mapping sourceType="HTTP:CONNECTIVITY" targetType="APP:SCACK_CONNECT_PROBLEM" />
@@ -87,6 +92,7 @@ output application/json
 payload]]]></http:query-params>
 		</http:request>
 		<flow-ref doc:name="sandSlackListTransformed" doc:id="e6189e2c-b3bc-4a3b-9011-1dbed1585a5b" name="sandSlackListTransformed"/>
+		<error-handler ref="errorHandling" />
 	</flow>
 	<flow name="slackSingleEvent" doc:id="c2294f73-7f99-4b8e-a251-3d1333e25bdd" >
 		<http:listener doc:name="POST /slack/event/" doc:id="eb3198f8-6097-4b8d-9fc9-ec3aab4cce18" config-ref="space-events-demo-httpListenerConfig" path="/slack/event/" allowedMethods="POST"/>
@@ -253,6 +259,7 @@ else{
 		</ee:transform>
 		<logger level="INFO" doc:name="payload" doc:id="959a0b32-2b5b-4be2-bab1-c5d6eb4ae931" message="#[payload]"/>
 		<flow-ref doc:name="sendSlackMessage" doc:id="8b20c674-2f0c-4853-88e6-8862d45bb85e" name="sendSlackMessage"/>
+		<error-handler ref="errorHandling" />
 	</flow>
 	<flow name="slackUpcoming" doc:id="91a798cf-103a-4689-8fe6-10e50faadb1f" >
 		<http:listener doc:name="POST /slack/upcoming/" doc:id="bf4c7653-038c-433a-a82a-2bbcafb096a3" config-ref="space-events-demo-httpListenerConfig" path="/slack/upcoming/"/>
@@ -261,6 +268,7 @@ else{
 			<http:query-params ><![CDATA[#[payload]]]></http:query-params>
 		</http:request>
 		<flow-ref doc:name="sandSlackListTransformed" doc:id="03ebb6de-2fa1-4f30-86f4-0915676ba96a" name="sandSlackListTransformed"/>
+		<error-handler ref="errorHandling" />
 	</flow>
 	<flow name="slackInfo" doc:id="e12e9a8e-70b4-49ac-bd48-08d36295ec60" >
 		<http:listener doc:name="POST /slack/info" doc:id="99d1b4b0-8903-48cf-96ef-47246a6fab6a" config-ref="space-events-demo-httpListenerConfig" path="/slack/info/" />
@@ -383,6 +391,7 @@ output application/json
 			</ee:message>
 		</ee:transform>
 		<flow-ref doc:name="sendSlackMessage" doc:id="2e45cdd4-4295-413b-bd8a-3173468f1d6a" name="sendSlackMessage"/>
+		<error-handler ref="errorHandling" />
 	</flow>
 	<flow name="slackPatents" doc:id="d91c6ed9-bb62-486e-9cda-ab8e249ca8fd" >
 		<http:listener doc:name="POST /slack/patents/" doc:id="299dd3b2-15d5-4941-bc74-8c272d1b158d" config-ref="space-events-demo-httpListenerConfig" path="/slack/patents/" allowedMethods="POST"/>
@@ -420,6 +429,7 @@ output application/json
 			</ee:message>
 		</ee:transform>
 		<flow-ref doc:name="sendSlackMessage" doc:id="071f1ef1-e447-43b9-ab42-d2ac999e3f26" name="sendSlackMessage"/>
+		<error-handler ref="errorHandling" />
 	</flow>
 	<flow name="slackPatent" doc:id="5373a533-58de-4398-bde5-3a9739ea8dde" >
 		<http:listener doc:name="POST /slack/patent/" doc:id="5f8a34c9-69a5-4c7f-8ae2-1ffd2cd11bf8" config-ref="space-events-demo-httpListenerConfig" path="/slack/patent/" allowedMethods="POST" />
@@ -454,10 +464,6 @@ output application/json
 			</ee:message>
 		</ee:transform>
 		<flow-ref doc:name="sendSlackMessage" doc:id="a8c165cc-fd85-47fe-bfa8-91e91f0c65fe" name="sendSlackMessage" />
+		<error-handler ref="errorHandling" />
 	</flow>
-	<sub-flow name="getDeployedPatents" doc:id="28f926ba-f7c4-4444-b350-1f31222e2e19" >
-		<http:request method="GET" doc:name="GET /patents/" doc:id="bb057c84-4873-42b4-b7ff-31c24d7cb911" config-ref="deployed_app" path="/patents">
-			<http:query-params><![CDATA[#[payload]]]></http:query-params>
-		</http:request>
-	</sub-flow>
 </mule>
