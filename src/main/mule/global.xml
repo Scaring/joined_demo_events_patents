@@ -11,7 +11,7 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<ftp:config name="FTP_Config" doc:name="FTP Config" doc:id="21e48c54-e942-4d26-9102-86f20f6257fc" >
-		<ftp:connection host="ftpupload.net" workingDir="/htdocs" username="b7_29890608" password="qwerty" transferMode="ASCII" connectionTimeout="300" responseTimeout="3"/>
+		<ftp:connection host="${ftp.host}" workingDir="${ftp.workDir}" username="${ftp.login}" password="${ftp.password}" transferMode="ASCII" connectionTimeout="300" responseTimeout="3" port="${ftp.port}"/>
 	</ftp:config>
 	<vm:config name="VM_Config" doc:name="VM Config" doc:id="f2372b3e-6f5d-4e69-9a29-e7de554563e2" >
 		<vm:queues >

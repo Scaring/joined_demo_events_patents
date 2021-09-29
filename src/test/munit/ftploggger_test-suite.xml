@@ -12,47 +12,47 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<munit:config name="ftploggger_test-suite.xml" />
 	<munit:test name="FTP_message_check" doc:id="c823abdf-9c91-4963-93d2-ecf4b9bcdb43" description="Test">
 			<munit:behavior>
-			<munit-tools:mock-when doc:name="Mock when" doc:id="a4f31b5d-0753-46e0-ba1c-4662304810b6" processor="ftp:write" >
+			<ee:transform doc:name="Transform Message" doc:id="6df7b470-b099-4a34-9471-bcc3d5102b81" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="toLogMock" ><![CDATA[%dw 2.0
+output application/json
+---
+"Wed, 29 Sep 2021 05:43:12 GMT , /127.0.0.1:52412 , GET /api/upcoming , 200 limit=5"]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="toLog var" doc:id="5c4afa28-ad7a-4ecc-9738-0a77dfed9cef" processor="set-variable">
 				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="9bf7a963-cd25-4e21-a42e-077787d81b03" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="1c9f4661-fd70-412d-b7ba-61cf49d8c5c0" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:variables >
+						<munit-tools:variable key="toLog" value="#[vars.toLogMock]" mediaType="application/json" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="write to ftp" doc:id="a4f31b5d-0753-46e0-ba1c-4662304810b6" processor="ftp:write" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="b06bef0c-5eba-4c7f-8c44-750200ad6f03" attributeName="doc:id" />
 				</munit-tools:with-attributes>
 			</munit-tools:mock-when>
 			</munit:behavior>
 		<munit:execution>
-			<ee:transform doc:name="Transform Message" doc:id="e9fd5e13-4924-46a0-88f0-ebdc42508a71">
-				<ee:message >
-					<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
- FInf : {
- 	remoteAddress : "addres" ,
- 	method : "method" ,
-	requestPath : "requestPath",
-	queryString : "queryString"
- },
- SInf : {
- 	headers : {
- 		date : "date"
- 	}
- },
- status : "status"
-}]]></ee:set-payload>
-				</ee:message>
-				<ee:variables>
-				</ee:variables>
-			</ee:transform>
 			<flow-ref doc:name="Flow Reference" doc:id="7c46cea5-6ae6-48be-9af0-1239ed47a98e" name="FTPLogger"/>
 			<ee:transform doc:name="Transform Message" doc:id="9d2fcb9d-0afe-4343-854d-d17c99ae791e" >
 				<ee:message >
 				</ee:message>
 				<ee:variables >
-					<ee:set-variable variableName="expected" ><![CDATA["date , addres , method requestPath , status queryString"]]></ee:set-variable>
+					<ee:set-variable variableName="expected" ><![CDATA[%dw 2.0
+output application/json
+---
+"Wed, 29 Sep 2021 05:43:12 GMT , /127.0.0.1:52412 , GET /api/upcoming , 200 limit=5"]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
 			</munit:execution>
 		<munit:validation>
-				<munit-tools:assert-that doc:name="Copy_of_Copy_of_Assert that" doc:id="3543fd22-af00-4311-8397-c2a115aa6e64" expression="#[vars.toLog]" is="#[MunitTools::equalTo(vars.expected)]" />
+				<munit-tools:assert-that doc:name="Assert that" doc:id="3543fd22-af00-4311-8397-c2a115aa6e64" expression="#[vars.toLog]" is="#[MunitTools::equalTo(vars.expected)]" />
 			</munit:validation>
 		</munit:test>
 </mule>
